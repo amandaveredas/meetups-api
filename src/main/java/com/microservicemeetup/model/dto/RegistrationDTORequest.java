@@ -1,4 +1,4 @@
-package com.microservicemeetup.model.entity;
+package com.microservicemeetup.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,19 +13,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RegistrationDTO {
-
-    private Long id;
-
-    @NotBlank
-    private String registration;
+public class RegistrationDTORequest {
 
     @NotBlank
     private String name;
 
-    @NotEmpty
-    private LocalDate dateOfRegistration;
-
     @NotBlank
     private String email;
+
 }
