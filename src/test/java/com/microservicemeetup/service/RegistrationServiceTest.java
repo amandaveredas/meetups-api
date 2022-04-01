@@ -1,7 +1,8 @@
 package com.microservicemeetup.service;
 
-import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
-import com.microservicemeetup.exceptions.RegistrationNotFoundById;
+import com.microservicemeetup.exception.EmailAlreadyExistsException;
+import com.microservicemeetup.exception.RegistrationFoundButNotDeletedException;
+import com.microservicemeetup.exception.RegistrationNotFoundException;
 import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.model.dto.RegistrationDTORequest;
 import com.microservicemeetup.repository.RegistrationRepository;
@@ -41,22 +42,24 @@ public class RegistrationServiceTest {
         this.registrationService = new RegistrationServiceImpl(repository);
     }
 
+
+    //************************************* save()
+
+
     @Test
     @DisplayName("Should save an registration")
     public void saveRegistrationWithSucces() throws EmailAlreadyExistsException {
 
-        //arrange
         RegistrationDTORequest registrationDTORequest = createdValidRegistrationDTORequest();
         Registration registration = createdValidRegistration();
 
 
-        //act
         Mockito.when(repository.existsByEmail(Mockito.anyString())).thenReturn(false);
         Mockito.when(repository.save(registration)).thenReturn(createdValidRegistrationWithId());
 
         Registration savedRegistration = registrationService.save(registrationDTORequest);
 
-        //assert
+
         assertThat(savedRegistration.getId()).isEqualTo(1L);
         assertThat(savedRegistration.getName()).isEqualTo("Amanda Lima");
         assertThat(savedRegistration.getEmail()).isEqualTo("amanda@teste.com.br");
@@ -70,9 +73,11 @@ public class RegistrationServiceTest {
         RegistrationDTORequest registrationDTORequest = createdValidRegistrationDTORequest();
         String expectedMessage = "Já existe um usuário cadastrado com esse email.";
 
+
         Mockito.when(repository.existsByEmail(Mockito.anyString())).thenReturn(true);
 
         Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.save(registrationDTORequest));
+
 
         assertThat(e)
                 .isInstanceOf(EmailAlreadyExistsException.class)
@@ -85,22 +90,30 @@ public class RegistrationServiceTest {
     public void shouldNotSaveEmptyFields() {
         RegistrationDTORequest registrationDTORequest = createdEmptyEmailAndNameRegistrationDTORequest();
 
+
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
         Set<ConstraintViolation<RegistrationDTORequest>> violations = validator.validate(registrationDTORequest);
+
 
         Assertions.assertEquals(2,violations.size());
 
     }
 
+
+    //************************************* getById()
+
+
     @Test
-    @DisplayName("Shoul get a Registration by id")
-    void getARegistrationByid() throws RegistrationNotFoundById {
+    @DisplayName("Should get a Registration by id")
+    void getARegistrationByid() throws RegistrationNotFoundException {
         Long id = 1L;
         Registration registration = createdValidRegistration();
         registration.setId(1L);
         Mockito.when(repository.findById(id)).thenReturn(Optional.of(registration));
 
+
         Optional<Registration> foundRegistration = registrationService.getById(id);
+
 
         assertThat(foundRegistration).isPresent();
         assertThat(foundRegistration.get().getId()).isEqualTo(id);
@@ -113,15 +126,85 @@ public class RegistrationServiceTest {
 
     @Test
     @DisplayName("Should not get a registration because the id was not found")
-    void shouldNotGetARegistrationById() throws RegistrationNotFoundById {
+    void shouldNotGetARegistrationById() {
         Mockito.when(repository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
         String expectedMessage = "Não foi possível encontrar o registro com o id informado.";
 
+
         Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.getById(Mockito.anyLong()));
 
+
         assertThat(e)
-                .isInstanceOf(RegistrationNotFoundById.class)
+                .isInstanceOf(RegistrationNotFoundException.class)
                 .hasMessage(expectedMessage);
+    }
+
+    //*************************************  delete()
+
+    @Test
+    @DisplayName("Should delete a registration")
+    void deleteRegistrationdWithSucces() {
+        Long id = 1L;
+        Registration registration = Registration.builder().id(id).build();
+        Mockito.when(repository.existsByRegistration(registration)).thenReturn(true);
+        Mockito.when(repository.existsById(id)).thenReturn(false);
+
+        Assertions.assertDoesNotThrow(() -> registrationService.delete(registration));
+        Mockito.verify(repository,Mockito.times(1)).delete(registration);
+    }
+
+    @Test
+    @DisplayName("Should thrown an exception because registration is null")
+    void shouldNotDeleteRegistrationNull() {
+        Registration registration = Registration.builder().build();
+        String expectedMessage = "Registro ou registro_id não podem ser nulos!!";
+
+        Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.delete(registration));
+
+
+        assertThat(e)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(expectedMessage);
+        Mockito.verify(repository,Mockito.never()).delete(registration);
+    }
+
+    @Test
+    @DisplayName("Should thrown a exception because the Registration was not found.")
+    void shouldNotDeleteRegistrationNotFound() {
+        Long id = 1L;
+        Registration registration = Registration.builder().id(id).build();
+        Mockito.when(repository.existsByRegistration(registration)).thenReturn(false);
+        String expectedMessage = "Registro não encontrado!";
+
+        Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.delete(registration));
+
+
+        assertThat(e)
+                .isInstanceOf(RegistrationNotFoundException.class)
+                .hasMessage(expectedMessage);
+        Mockito.verify(repository,Mockito.times(1)).existsByRegistration(registration);
+        Mockito.verify(repository,Mockito.never()).delete(registration);
+
+    }
+
+    @Test
+    @DisplayName("Should thrown a exception because the Registration was found but not deleted.")
+    void shouldNotDeleteRegistrationFoundButNotDeleted() {
+        Long id = 1L;
+        Registration registration = Registration.builder().id(id).build();
+        Mockito.when(repository.existsByRegistration(registration)).thenReturn(true);
+        Mockito.when(repository.existsById(id)).thenReturn(true);
+        String expectedMessage = "Não foi possível excluir o registro!";
+
+        Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.delete(registration));
+
+
+        assertThat(e)
+                .isInstanceOf(RegistrationFoundButNotDeletedException.class)
+                .hasMessage(expectedMessage);
+        Mockito.verify(repository,Mockito.times(1)).existsByRegistration(registration);
+        Mockito.verify(repository,Mockito.times(1)).existsById(id);
+        Mockito.verify(repository,Mockito.times(1)).delete(registration);
     }
 
     private RegistrationDTORequest createdEmptyEmailAndNameRegistrationDTORequest() {

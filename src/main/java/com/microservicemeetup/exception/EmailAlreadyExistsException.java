@@ -1,4 +1,4 @@
-package com.microservicemeetup.exceptions;
+package com.microservicemeetup.exception;
 
 public class EmailAlreadyExistsException extends Exception {
     public EmailAlreadyExistsException(){

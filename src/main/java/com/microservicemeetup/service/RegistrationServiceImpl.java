@@ -1,7 +1,8 @@
 package com.microservicemeetup.service;
 
-import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
-import com.microservicemeetup.exceptions.RegistrationNotFoundById;
+import com.microservicemeetup.exception.EmailAlreadyExistsException;
+import com.microservicemeetup.exception.RegistrationFoundButNotDeletedException;
+import com.microservicemeetup.exception.RegistrationNotFoundException;
 import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.model.dto.RegistrationDTORequest;
 import com.microservicemeetup.repository.RegistrationRepository;
@@ -39,12 +40,29 @@ public class RegistrationServiceImpl implements RegistrationService{
     }
 
     @Override
-    public Optional<Registration> getById(Long id) throws RegistrationNotFoundById {
+    public Optional<Registration> getById(Long id) throws RegistrationNotFoundException {
         Optional<Registration> foundRegistration = repository.findById(id);
 
         if(foundRegistration.isEmpty()){
-            throw new RegistrationNotFoundById();
+            throw new RegistrationNotFoundException("Não foi possível encontrar o registro com o id informado.");
         }
         return foundRegistration;
+    }
+
+    @Override
+    public void delete(Registration registration) throws RegistrationNotFoundException, RegistrationFoundButNotDeletedException {
+        if(registration == null || registration.getId() == null){
+            throw new IllegalArgumentException("Registro ou registro_id não podem ser nulos!!");
+        }
+
+        if (!repository.existsByRegistration(registration)){
+            throw new RegistrationNotFoundException("Registro não encontrado!");
+        }
+
+        repository.delete(registration);
+
+        if (repository.existsById(registration.getId())){
+            throw new RegistrationFoundButNotDeletedException();
+        }
     }
 }

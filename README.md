@@ -15,7 +15,7 @@ PathVariable: {id}
 
       STATUS: 404
    
-      EXCEPTION: RegistrationNotFoundById
+      EXCEPTION: RegistrationNotFoundException
 
       BODY: "Não foi possível encontrar o registro com o id informado."
    3. internal server error:
@@ -158,20 +158,27 @@ PathVariable: {Email}
     STATUS: 204
 
     BODY: Vazio
- 2. not found:
+ 2. bad request:
+
+    STATUS: 400
+
+    EXCEPTION: IllegalArgumentException
+
+    BODY: "Registro ou registro_id não podem ser nulos!!"
+ 3. not found:
 
     STATUS: 404
 
     EXCEPTION: RegistrationNotFoundException
 
-    BODY: "Não foi possível encontrar o registro."
- 3. internal server error:
+    BODY: Registro não encontrado!"
+ 4. internal server error:
    
     STATUS: 500
 
-    EXCEPTION: Qualquer Exception exceto a RegistrationNotFoundException
+    EXCEPTION: RegistrationFoundButNotDeletedException
 
-    BODY: Vazio
+    BODY: "Não foi possível excluir o registro!"
 
 ### Reference Documentation
 For further reference, please consider the following sections:

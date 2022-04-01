@@ -9,4 +9,6 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
 
     Boolean existsByEmail(String email);
     Registration save(Registration registration);
+
+    boolean existsByRegistration(Registration registration);
 }
