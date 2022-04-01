@@ -1,6 +1,7 @@
 package com.microservicemeetup.service;
 
 import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
+import com.microservicemeetup.exceptions.RegistrationNotFoundById;
 import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.model.dto.RegistrationDTORequest;
 import com.microservicemeetup.repository.RegistrationRepository;
@@ -19,6 +20,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
@@ -60,8 +62,6 @@ public class RegistrationServiceTest {
         assertThat(savedRegistration.getEmail()).isEqualTo("amanda@teste.com.br");
         assertThat(savedRegistration.getDateOfRegistration()).isEqualTo(LocalDate.now());
         assertThat(savedRegistration.getRegistrationVersion()).isEqualTo("001");
-
-
     }
 
     @Test
@@ -73,6 +73,7 @@ public class RegistrationServiceTest {
         Mockito.when(repository.existsByEmail(Mockito.anyString())).thenReturn(true);
 
         Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.save(registrationDTORequest));
+
         assertThat(e)
                 .isInstanceOf(EmailAlreadyExistsException.class)
                         .hasMessage(expectedMessage);
@@ -91,6 +92,37 @@ public class RegistrationServiceTest {
 
     }
 
+    @Test
+    @DisplayName("Shoul get a Registration by id")
+    void getARegistrationByid() throws RegistrationNotFoundById {
+        Long id = 1L;
+        Registration registration = createdValidRegistration();
+        registration.setId(1L);
+        Mockito.when(repository.findById(id)).thenReturn(Optional.of(registration));
+
+        Optional<Registration> foundRegistration = registrationService.getById(id);
+
+        assertThat(foundRegistration).isPresent();
+        assertThat(foundRegistration.get().getId()).isEqualTo(id);
+        assertThat(foundRegistration.get().getName()).isEqualTo(registration.getName());
+        assertThat(foundRegistration.get().getEmail()).isEqualTo(registration.getEmail());
+        assertThat(foundRegistration.get().getRegistrationVersion()).isEqualTo(registration.getRegistrationVersion());
+        assertThat(foundRegistration.get().getDateOfRegistration()).isEqualTo(registration.getDateOfRegistration());
+
+    }
+
+    @Test
+    @DisplayName("Should not get a registration because the id was not found")
+    void shouldNotGetARegistrationById() throws RegistrationNotFoundById {
+        Mockito.when(repository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+        String expectedMessage = "Não foi possível encontrar o registro com o id informado.";
+
+        Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.getById(Mockito.anyLong()));
+
+        assertThat(e)
+                .isInstanceOf(RegistrationNotFoundById.class)
+                .hasMessage(expectedMessage);
+    }
 
     private RegistrationDTORequest createdEmptyEmailAndNameRegistrationDTORequest() {
         return RegistrationDTORequest.builder()

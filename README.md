@@ -15,9 +15,9 @@ PathVariable: {id}
 
       STATUS: 404
    
-      EXCEPTION: RegistrationNotFoundException
+      EXCEPTION: RegistrationNotFoundById
 
-      BODY: "Não foi possível encontrar o registro."
+      BODY: "Não foi possível encontrar o registro com o id informado."
    3. internal server error:
       STATUS: 500
 
