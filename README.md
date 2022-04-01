@@ -1,9 +1,9 @@
 # Cenários de testes service:
 
-## "get/{Registration}"
+## "get/{id}"
    
 ### Request:
-PathVariable: {Registration}
+PathVariable: {id}
 
 ### Response:
    1. succes:

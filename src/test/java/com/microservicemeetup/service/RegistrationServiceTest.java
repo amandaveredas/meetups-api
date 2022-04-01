@@ -21,7 +21,8 @@ import javax.validation.Validator;
 import java.time.LocalDate;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
+
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -67,19 +68,20 @@ public class RegistrationServiceTest {
     @DisplayName("Should return an EmailAlreadyExistsException")
     public void shouldNotSaveRegistrationWithDuplicatedEmail() {
         RegistrationDTORequest registrationDTORequest = createdValidRegistrationDTORequest();
-        EmailAlreadyExistsException e = new EmailAlreadyExistsException();
         String expectedMessage = "Já existe um usuário cadastrado com esse email.";
 
         Mockito.when(repository.existsByEmail(Mockito.anyString())).thenReturn(true);
 
-        Assertions.assertThrows(EmailAlreadyExistsException.class,() -> registrationService.save(registrationDTORequest));
-        Assertions.assertEquals(expectedMessage,e.getMessage());
-
+        Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.save(registrationDTORequest));
+        assertThat(e)
+                .isInstanceOf(EmailAlreadyExistsException.class)
+                        .hasMessage(expectedMessage);
+        Mockito.verify(repository,Mockito.never()).save(createdValidRegistration());
     }
 
     @Test
     @DisplayName("Should return an Validation Error: Email or Name cannot be empty")
-    public void saveRegistrationEmptyNameEmailBadRequest() {
+    public void shouldNotSaveEmptyFields() {
         RegistrationDTORequest registrationDTORequest = createdEmptyEmailAndNameRegistrationDTORequest();
 
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
