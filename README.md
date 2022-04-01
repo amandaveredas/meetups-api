@@ -84,16 +84,16 @@ PathVariable: {Email}
 
        STATUS: 400
 
-       EXCEPTION: EmptyEmailException
+       EXCEPTION: Validation Constraint
 
-       BODY: "O campo email é obrigatório."
+       BODY: Validation constraint message
    4. bad request:
 
       STATUS: 400
 
-      EXCEPTION: EmptyNameException
+      EXCEPTION: Validation Constraint
 
-      BODY: "O campo nome é obrigatório."
+      BODY: "Validation constraint message
    5. internal server error:
       STATUS: 500
 

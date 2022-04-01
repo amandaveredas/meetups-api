@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RegistrationRepository extends JpaRepository<Registration, Long> {
 
-    Boolean existsByNameAndEmail(String name, String email);
+    Boolean existsByEmail(String email);
     Registration save(Registration registration);
 }

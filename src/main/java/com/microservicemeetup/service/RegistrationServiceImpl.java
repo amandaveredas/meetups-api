@@ -1,10 +1,9 @@
 package com.microservicemeetup.service;
 
-import com.microservicemeetup.exceptions.RegistrationAlreadyExistsException;
+import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
 import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.model.dto.RegistrationDTORequest;
 import com.microservicemeetup.repository.RegistrationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,11 +20,10 @@ public class RegistrationServiceImpl implements RegistrationService{
     }
 
     @Override
-    public Registration save(RegistrationDTORequest registrationDTORequest) throws RegistrationAlreadyExistsException {
+    public Registration save(RegistrationDTORequest registrationDTORequest) throws EmailAlreadyExistsException {
 
-        if(repository.existsByNameAndEmail(registrationDTORequest.getName(),
-                registrationDTORequest.getEmail())){
-            throw new RegistrationAlreadyExistsException();
+        if(repository.existsByEmail(registrationDTORequest.getEmail())){
+            throw new EmailAlreadyExistsException();
         }
 
         Registration registration = Registration.builder()
