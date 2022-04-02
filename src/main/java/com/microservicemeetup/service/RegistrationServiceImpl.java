@@ -25,9 +25,7 @@ public class RegistrationServiceImpl implements RegistrationService{
     @Override
     public Registration save(RegistrationDTORequest registrationDTORequest) throws EmailAlreadyExistsException {
 
-        if(repository.existsByEmail(registrationDTORequest.getEmail())){
-            throw new EmailAlreadyExistsException();
-        }
+        verifyIfExistsByEmail(registrationDTORequest);
 
         Registration registration = Registration.builder()
                 .name(registrationDTORequest.getName())
@@ -51,18 +49,77 @@ public class RegistrationServiceImpl implements RegistrationService{
 
     @Override
     public void delete(Registration registration) throws RegistrationNotFoundException, RegistrationFoundButNotDeletedException {
-        if(registration == null || registration.getId() == null){
-            throw new IllegalArgumentException("Registro ou registro_id não podem ser nulos!!");
-        }
-
-        if (!repository.existsByRegistration(registration)){
-            throw new RegistrationNotFoundException("Registro não encontrado!");
-        }
+        verifyNullId(registration.getId());
+        verifyNullRegistration(registration);
+        verifyIfExistsByRegistration(registration);
 
         repository.delete(registration);
 
         if (repository.existsById(registration.getId())){
             throw new RegistrationFoundButNotDeletedException();
+        }
+    }
+    
+    @Override
+    public Registration update(Long id, RegistrationDTORequest registrationDTORequest) throws EmailAlreadyExistsException {
+        Optional<Registration> actualRegistration = repository.findById(id);
+
+        if(actualRegistration.isEmpty()){
+            return createANewRegister(registrationDTORequest);
+        }
+
+        //udating a version
+        verifyDuplicatedEmail(id, registrationDTORequest);
+        String updatedVersion = getUpdatedVersion(actualRegistration);
+
+        Registration updatedRegistration = Registration.builder()
+                .id(id)
+                .name(registrationDTORequest.getName())
+                .email(registrationDTORequest.getEmail())
+                .dateOfRegistration(LocalDate.now())
+                .registrationVersion(updatedVersion)
+                .build();
+
+        return repository.save(updatedRegistration);
+    }
+
+    private String getUpdatedVersion(Optional<Registration> actualRegistration) {
+        return "00" +
+                String.valueOf(Integer.parseInt(actualRegistration.get().getRegistrationVersion()) + 1);
+    }
+
+    private Registration createANewRegister(RegistrationDTORequest registrationDTORequest) throws EmailAlreadyExistsException {
+        return this.save(registrationDTORequest);
+    }
+
+    private void verifyDuplicatedEmail(Long id, RegistrationDTORequest registrationDTORequest) throws EmailAlreadyExistsException {
+        if(repository.existsByEmail(registrationDTORequest.getEmail())){
+            if (repository.findByEmail(registrationDTORequest.getEmail()).getId() != id)
+                throw new EmailAlreadyExistsException();
+        }
+    }
+
+    private void verifyIfExistsByEmail(RegistrationDTORequest registrationDTORequest) throws EmailAlreadyExistsException {
+        if(repository.existsByEmail(registrationDTORequest.getEmail())){
+            throw new EmailAlreadyExistsException();
+        }
+    }
+
+    private void verifyIfExistsByRegistration(Registration registration) throws RegistrationNotFoundException {
+        if (!repository.existsByRegistration(registration)){
+            throw new RegistrationNotFoundException("Registro não encontrado!");
+        }
+    }
+
+    private void verifyNullId(Long id ) {
+        if(id == null){
+            throw new IllegalArgumentException("Registro ou registro_id não podem ser nulos!!");
+        }
+    }
+
+    private void verifyNullRegistration(Registration registration) {
+        if(registration == null){
+            throw new IllegalArgumentException("Registro ou registro_id não podem ser nulos!!");
         }
     }
 }

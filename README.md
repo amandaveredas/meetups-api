@@ -101,10 +101,10 @@ PathVariable: {Email}
 
       BODY: Vazio
 
-## "put/{registration}"
+## "put/{id}"
 
 ## Request:
-   PathVariable : Registration
+   PathVariable : id
    Body: RegistrationDtoRequest
 
 ## Response:
@@ -122,7 +122,7 @@ PathVariable: {Email}
 
      STATUS: 400
 
-     EXCEPTION: RegistrationAlreadyExistsException
+     EXCEPTION: EmailAlreadyExistsException
 
      BODY: "Já existe um registro cadastrado com esses dados."
   3. bad request:
