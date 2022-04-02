@@ -15,12 +15,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -278,6 +284,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
+    @DisplayName("Should thrown an exception when try to update with a duplicated email.")
     void shouldNotUpdateARegistrationWithAnDuplicatedEmail() throws EmailAlreadyExistsException {
         Long id = 1L;
         RegistrationDTORequest receivedRegistration = RegistrationDTORequest.builder()
@@ -303,6 +310,49 @@ public class RegistrationServiceTest {
         Mockito.verify(repository,Mockito.times(1)).existsByEmail(receivedRegistration.getEmail());
         Mockito.verify(repository,Mockito.never()).save(createdValidRegistrationWithId());
 
+    }
+
+    //*********************************** findAll
+
+    @Test
+    @DisplayName("Should return a page with all matches with filter")
+    void findRegistrations() {
+        Registration registration = createdValidRegistrationWithId();
+        PageRequest pageRequest = PageRequest.of(0,10);
+        List<Registration> registrations = Arrays.asList(registration);
+        Page<Registration> page = new PageImpl<Registration>(Arrays.asList(registration),
+                PageRequest.of(0,10),1);
+
+        Mockito.when(repository.findAll(Mockito.any(Example.class),Mockito.any(PageRequest.class)))
+                .thenReturn(page);
+
+        Page<Registration> result = registrationService.find(registration,pageRequest);
+
+        assertThat(result.getTotalElements()).isEqualTo(1);
+        assertThat(result.getContent()).isEqualTo(registrations);
+        assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
+        assertThat(result.getPageable().getPageSize()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("Should return a registration by registration attribute.")
+    void getRegistrationByRegistrationAtribute() {
+        String registrationAtribute = "234";
+
+        Mockito.when(repository.findByRegistrationAtribute(registrationAtribute))
+                .thenReturn(Optional.of
+                        (Registration
+                                .builder()
+                                .id(11L)
+                                .registrationVersion(registrationAtribute)
+                                .build()));
+
+        Optional<Registration> registration = registrationService.getRegistrationByRegistrationAtribute(registrationAtribute);
+
+        assertThat(registration.isPresent()).isTrue();
+        assertThat(registration.get().getId()).isEqualTo(11L);
+        assertThat(registration.get().getRegistrationVersion()).isEqualTo(registrationAtribute);
+        Mockito.verify(repository,Mockito.times(1)).findByRegistrationAtribute(registrationAtribute);
     }
 
     private RegistrationDTORequest createdEmptyEmailAndNameRegistrationDTORequest() {

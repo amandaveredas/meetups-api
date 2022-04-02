@@ -6,6 +6,10 @@ import com.microservicemeetup.exception.RegistrationNotFoundException;
 import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.model.dto.RegistrationDTORequest;
 import com.microservicemeetup.repository.RegistrationRepository;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -59,7 +63,7 @@ public class RegistrationServiceImpl implements RegistrationService{
             throw new RegistrationFoundButNotDeletedException();
         }
     }
-    
+
     @Override
     public Registration update(Long id, RegistrationDTORequest registrationDTORequest) throws EmailAlreadyExistsException {
         Optional<Registration> actualRegistration = repository.findById(id);
@@ -81,6 +85,23 @@ public class RegistrationServiceImpl implements RegistrationService{
                 .build();
 
         return repository.save(updatedRegistration);
+    }
+
+    @Override
+    public Page<Registration> find(Registration filter, PageRequest pageRequest) {
+        Example<Registration> example = Example.of(filter,
+                ExampleMatcher
+                        .matching()
+                        .withIgnoreCase()
+                        .withIgnoreNullValues()
+                        .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
+
+        return repository.findAll(example,pageRequest);
+    }
+
+    @Override
+    public Optional<Registration> getRegistrationByRegistrationAtribute(String registrationAtribute) {
+        return repository.findByRegistrationAtribute(registrationAtribute);
     }
 
     private String getUpdatedVersion(Optional<Registration> actualRegistration) {

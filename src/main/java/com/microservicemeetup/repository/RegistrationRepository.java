@@ -15,4 +15,6 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
     boolean existsByRegistration(Registration registration);
 
     Registration findByEmail(String email);
+
+    Optional<Registration> findByRegistrationAtribute(String registrationAtribute);
 }
