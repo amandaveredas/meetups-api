@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface RegistrationService {
 
-    Registration save(RegistrationDTORequest registrationDTORequest) throws EmailAlreadyExistsException;
+    Registration save(Registration registration) throws EmailAlreadyExistsException;
 
     Optional<Registration> getById(Long id) throws RegistrationNotFoundException;
 

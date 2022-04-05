@@ -27,16 +27,12 @@ public class RegistrationServiceImpl implements RegistrationService{
     }
 
     @Override
-    public Registration save(RegistrationDTORequest registrationDTORequest) throws EmailAlreadyExistsException {
+    public Registration save(Registration registration) throws EmailAlreadyExistsException {
 
-        verifyIfExistsByEmail(registrationDTORequest);
+        verifyIfExistsByEmail(registration);
 
-        Registration registration = Registration.builder()
-                .name(registrationDTORequest.getName())
-                .email(registrationDTORequest.getEmail())
-                .registrationVersion(firstRegistration)
-                .dateOfRegistration(LocalDate.now())
-                .build();
+        registration.setDateOfRegistration(LocalDate.now());
+        registration.setRegistrationVersion(firstRegistration);
 
         return repository.save(registration);
     }
@@ -66,25 +62,26 @@ public class RegistrationServiceImpl implements RegistrationService{
 
     @Override
     public Registration update(Long id, RegistrationDTORequest registrationDTORequest) throws EmailAlreadyExistsException {
-        Optional<Registration> actualRegistration = repository.findById(id);
-
-        if(actualRegistration.isEmpty()){
-            return createANewRegister(registrationDTORequest);
-        }
-
-        //udating a version
-        verifyDuplicatedEmail(id, registrationDTORequest);
-        String updatedVersion = getUpdatedVersion(actualRegistration);
-
-        Registration updatedRegistration = Registration.builder()
-                .id(id)
-                .name(registrationDTORequest.getName())
-                .email(registrationDTORequest.getEmail())
-                .dateOfRegistration(LocalDate.now())
-                .registrationVersion(updatedVersion)
-                .build();
-
-        return repository.save(updatedRegistration);
+//        Optional<Registration> actualRegistration = repository.findById(id);
+//
+//        if(actualRegistration.isEmpty()){
+//            return createANewRegister(registrationDTORequest);
+//        }
+//
+//        //udating a version
+//        verifyDuplicatedEmail(id, registrationDTORequest);
+//        String updatedVersion = getUpdatedVersion(actualRegistration);
+//
+//        Registration updatedRegistration = Registration.builder()
+//                .id(id)
+//                .name(registrationDTORequest.getName())
+//                .email(registrationDTORequest.getEmail())
+//                .dateOfRegistration(LocalDate.now())
+//                .registrationVersion(updatedVersion)
+//                .build();
+//
+//        return repository.save(updatedRegistration);
+        return null;
     }
 
     @Override
@@ -109,8 +106,8 @@ public class RegistrationServiceImpl implements RegistrationService{
                 String.valueOf(Integer.parseInt(actualRegistration.get().getRegistrationVersion()) + 1);
     }
 
-    private Registration createANewRegister(RegistrationDTORequest registrationDTORequest) throws EmailAlreadyExistsException {
-        return this.save(registrationDTORequest);
+    private Registration createANewRegister(Registration registration) throws EmailAlreadyExistsException {
+        return this.save(registration);
     }
 
     private void verifyDuplicatedEmail(Long id, RegistrationDTORequest registrationDTORequest) throws EmailAlreadyExistsException {
@@ -120,8 +117,8 @@ public class RegistrationServiceImpl implements RegistrationService{
         }
     }
 
-    private void verifyIfExistsByEmail(RegistrationDTORequest registrationDTORequest) throws EmailAlreadyExistsException {
-        if(repository.existsByEmail(registrationDTORequest.getEmail())){
+    private void verifyIfExistsByEmail(Registration registration) throws EmailAlreadyExistsException {
+        if(repository.existsByEmail(registration.getEmail())){
             throw new EmailAlreadyExistsException();
         }
     }

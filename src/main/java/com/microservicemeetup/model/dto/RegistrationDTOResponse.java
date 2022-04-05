@@ -16,15 +16,11 @@ import java.time.LocalDate;
 public class RegistrationDTOResponse {
     private Long id;
 
-    @NotBlank
     private String registrationVersion;
 
-    @NotBlank
     private String name;
 
-    @NotEmpty
     private LocalDate dateOfRegistration;
 
-    @NotBlank
     private String email;
 }

@@ -1,4 +1,4 @@
-# Cenários de testes service:
+# Cenários:
 
 ## "get/{id}"
    
@@ -18,30 +18,6 @@ PathVariable: {id}
       EXCEPTION: RegistrationNotFoundException
 
       BODY: "Não foi possível encontrar o registro com o id informado."
-   3. internal server error:
-      STATUS: 500
-
-      EXCEPTION: Qualquer Exception exceto a RegistrationNotFoundException
-
-      BODY: Vazio 
-## "get/{email}"
-
-### Request:
-PathVariable: {Email}
-
-### Response:
-   1. succes:
-
-      STATUS: 200
-
-      BODY: Page<RegistrationDtoResponse>
-   2. internal server error:
-
-      STATUS: 500
-
-      EXCEPTION: Qualquer Exception.
-
-      BODY: Vazio
 
 ## "/get"
 
