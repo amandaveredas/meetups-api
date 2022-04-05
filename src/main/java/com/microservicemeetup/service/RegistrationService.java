@@ -18,7 +18,7 @@ public interface RegistrationService {
 
     void delete(Registration registration) throws RegistrationNotFoundException, RegistrationFoundButNotDeletedException;
 
-    Registration update(Long id, RegistrationDTORequest registration) throws EmailAlreadyExistsException;
+    Registration update(Long id, Registration registration) throws EmailAlreadyExistsException;
 
     Page<Registration> find(Registration filter, PageRequest pageRequest);
 
