@@ -1,17 +1,15 @@
 package com.microservicemeetup.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microservicemeetup.exception.EmailAlreadyExistsException;
 import com.microservicemeetup.exception.RegistrationNotFoundException;
-import com.microservicemeetup.model.Registration;
+import com.microservicemeetup.model.entity.Registration;
 import com.microservicemeetup.model.dto.RegistrationDTORequest;
 import com.microservicemeetup.service.RegistrationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,12 +20,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -144,7 +140,7 @@ public class RegistrationControllerTest {
 
     }
 
-    //**********************************get
+    //********************************** get by id
 
 
     @Test
@@ -183,7 +179,13 @@ public class RegistrationControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    //********************************** get
+    @Test
+    @DisplayName("Should get all Registration with pagination")
+    void getAllRegistrationsWithPagination() throws Exception {
+        Registration foundRegistration = createRegistration();
 
+    }
 
     private RegistrationDTORequest createDTORequestWithEmptyName() {
         return RegistrationDTORequest.builder()

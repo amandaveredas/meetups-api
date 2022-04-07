@@ -148,13 +148,7 @@ PathVariable: {id}
     EXCEPTION: RegistrationNotFoundException
 
     BODY: Registro não encontrado!"
- 4. internal server error:
-   
-    STATUS: 500
 
-    EXCEPTION: RegistrationFoundButNotDeletedException
-
-    BODY: "Não foi possível excluir o registro!"
 
 ### Reference Documentation
 For further reference, please consider the following sections:

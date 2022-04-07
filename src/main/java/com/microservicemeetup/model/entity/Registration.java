@@ -1,4 +1,4 @@
-package com.microservicemeetup.model;
+package com.microservicemeetup.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,10 +1,8 @@
 package com.microservicemeetup.service;
 
 import com.microservicemeetup.exception.EmailAlreadyExistsException;
-import com.microservicemeetup.exception.RegistrationFoundButNotDeletedException;
 import com.microservicemeetup.exception.RegistrationNotFoundException;
-import com.microservicemeetup.model.Registration;
-import com.microservicemeetup.model.dto.RegistrationDTORequest;
+import com.microservicemeetup.model.entity.Registration;
 import com.microservicemeetup.repository.RegistrationRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -48,17 +46,17 @@ public class RegistrationServiceImpl implements RegistrationService{
     }
 
     @Override
-    public void delete(Registration registration) throws RegistrationNotFoundException, RegistrationFoundButNotDeletedException {
-        verifyNullId(registration.getId());
+    public void delete(Registration registration) throws RegistrationNotFoundException{
+        Long id = registration.getId();
+        verifyNullId(id);
         verifyNullRegistration(registration);
-        verifyIfExistsByRegistration(registration);
+
+        if (!verifyIfExistsById(id))
+            throw new RegistrationNotFoundException("Registro não encontrado!");
 
         repository.delete(registration);
-
-        if (repository.existsById(registration.getId())){
-            throw new RegistrationFoundButNotDeletedException();
-        }
     }
+
 
     @Override
     public Registration update(Long id, Registration registration) throws EmailAlreadyExistsException {
@@ -96,8 +94,8 @@ public class RegistrationServiceImpl implements RegistrationService{
     }
 
     @Override
-    public Optional<Registration> getRegistrationByRegistrationAtribute(String registrationAtribute) {
-        return repository.findByRegistrationAtribute(registrationAtribute);
+    public Optional<Registration> getRegistrationByRegistrationVersion(String registrationAtribute) {
+        return repository.findByRegistrationVersion(registrationAtribute);
     }
 
     private String getUpdatedVersion(Optional<Registration> actualRegistration) {
@@ -122,11 +120,6 @@ public class RegistrationServiceImpl implements RegistrationService{
         }
     }
 
-    private void verifyIfExistsByRegistration(Registration registration) throws RegistrationNotFoundException {
-        if (!repository.existsByRegistration(registration)){
-            throw new RegistrationNotFoundException("Registro não encontrado!");
-        }
-    }
 
     private void verifyNullId(Long id ) {
         if(id == null){
@@ -138,5 +131,9 @@ public class RegistrationServiceImpl implements RegistrationService{
         if(registration == null){
             throw new IllegalArgumentException("Registro ou registro_id não podem ser nulos!!");
         }
+    }
+
+    private boolean verifyIfExistsById(Long id) throws RegistrationNotFoundException {
+        return repository.existsById(id);
     }
 }

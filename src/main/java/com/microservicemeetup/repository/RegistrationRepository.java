@@ -1,6 +1,6 @@
 package com.microservicemeetup.repository;
 
-import com.microservicemeetup.model.Registration;
+import com.microservicemeetup.model.entity.Registration;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,9 +12,9 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
     Boolean existsByEmail(String email);
     Registration save(Registration registration);
 
-    boolean existsByRegistration(Registration registration);
+    boolean existsByRegistrationVersion(String registration);
 
     Registration findByEmail(String email);
 
-    Optional<Registration> findByRegistrationAtribute(String registrationAtribute);
+    Optional<Registration> findByRegistrationVersion(String registrationAtribute);
 }

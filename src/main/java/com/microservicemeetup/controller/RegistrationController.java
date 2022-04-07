@@ -2,7 +2,7 @@ package com.microservicemeetup.controller;
 
 import com.microservicemeetup.exception.EmailAlreadyExistsException;
 import com.microservicemeetup.exception.RegistrationNotFoundException;
-import com.microservicemeetup.model.Registration;
+import com.microservicemeetup.model.entity.Registration;
 import com.microservicemeetup.model.dto.RegistrationDTORequest;
 import com.microservicemeetup.model.dto.RegistrationDTOResponse;
 import com.microservicemeetup.service.RegistrationService;
