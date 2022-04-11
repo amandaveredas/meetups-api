@@ -170,7 +170,7 @@ public class RegistrationControllerTest {
                 .perform(requestBuilder)
                 .andExpect(status().isNotFound());
     }
-
+//********************************************* update
 
 
     @Test
@@ -236,31 +236,6 @@ public class RegistrationControllerTest {
                 .perform(request)
                 .andExpect(status().isBadRequest());
 
-    }
-
-    @Test
-    @DisplayName("Should return a BadRequest Status because of empty email.")
-    void dontUpdateARegistrationWithEmptyEmail() throws Exception {
-        Long id = 1L;
-
-        RegistrationDTORequest dtoRequest = RegistrationDTORequest.builder()
-                .name("Amanda Lima Santos")
-                .email("amanda2@teste.com")
-                .build();
-
-        String json = new ObjectMapper().writeValueAsString(dtoRequest);
-
-        BDDMockito.given(service.update(eq(id),any(Registration.class))).willThrow(EmailAlreadyExistsException.class);
-
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .put(REGISTRATION_API.concat("/"+id))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(json);
-
-        mockMvc
-                .perform(request)
-                .andExpect(status().isBadRequest());
     }
 
 
