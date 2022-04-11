@@ -8,6 +8,7 @@ import com.microservicemeetup.model.entity.Registration;
 import com.microservicemeetup.model.dto.RegistrationDTORequest;
 import com.microservicemeetup.service.RegistrationService;
 import com.microservicemeetup.service.RegistrationServiceImpl;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,6 +29,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -126,6 +131,7 @@ public class RegistrationControllerTest {
         Long id = 1L;
 
         BDDMockito.given(service.getById(id)).willThrow(RegistrationNotFoundException.class);
+
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(REGISTRATION_API.concat("/"+id))
                 .accept(MediaType.APPLICATION_JSON);
@@ -136,6 +142,43 @@ public class RegistrationControllerTest {
     }
 
     //********************************** get
+
+    @Test
+    @DisplayName("Should filter registration")
+    public void findRegistrations() throws Exception {
+
+        Long id = 1L;
+
+        Registration registration = Registration.builder()
+                .id(id)
+                .name(createRegistration().getName())
+                .email(createRegistration().getEmail())
+                .dateOfRegistration(createRegistration().getDateOfRegistration())
+                .registrationVersion(createRegistration().getRegistrationVersion())
+                .build();
+
+        BDDMockito.given(service.find(Mockito.any(Registration.class), Mockito.any(Pageable.class)) )
+                .willReturn(new PageImpl<Registration>(Arrays.asList(registration), PageRequest.of(0,100), 1));
+
+
+        String queryString = String.format("?name=%s&email=%s&page=0&size=100",
+                registration.getName(), registration.getEmail());
+
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(REGISTRATION_API.concat(queryString))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc
+                .perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("content", Matchers.hasSize(1)))
+                .andExpect(jsonPath("totalElements"). value(1))
+                .andExpect(jsonPath("pageable.pageSize"). value(100))
+                .andExpect(jsonPath("pageable.pageNumber"). value(0));
+
+    }
+
 
     //********************************** delete
 

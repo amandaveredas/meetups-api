@@ -4,10 +4,7 @@ import com.microservicemeetup.exception.EmailAlreadyExistsException;
 import com.microservicemeetup.exception.RegistrationNotFoundException;
 import com.microservicemeetup.model.entity.Registration;
 import com.microservicemeetup.repository.RegistrationRepository;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -78,7 +75,7 @@ public class RegistrationServiceImpl implements RegistrationService{
     }
 
     @Override
-    public Page<Registration> find(Registration filter, PageRequest pageRequest) {
+    public Page<Registration> find(Registration filter, Pageable pageable) {
         Example<Registration> example = Example.of(filter,
                 ExampleMatcher
                         .matching()
@@ -86,7 +83,7 @@ public class RegistrationServiceImpl implements RegistrationService{
                         .withIgnoreNullValues()
                         .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
 
-        return repository.findAll(example,pageRequest);
+        return repository.findAll(example,pageable);
     }
 
     @Override

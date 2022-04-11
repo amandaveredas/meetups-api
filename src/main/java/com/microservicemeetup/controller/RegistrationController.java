@@ -2,16 +2,22 @@ package com.microservicemeetup.controller;
 
 import com.microservicemeetup.exception.EmailAlreadyExistsException;
 import com.microservicemeetup.exception.RegistrationNotFoundException;
+import com.microservicemeetup.model.dto.RegistrationDTORequestFilter;
 import com.microservicemeetup.model.entity.Registration;
 import com.microservicemeetup.model.dto.RegistrationDTORequest;
 import com.microservicemeetup.model.dto.RegistrationDTOResponse;
 import com.microservicemeetup.service.RegistrationService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -37,6 +43,19 @@ public class RegistrationController {
 
         return modelMapper.map(entity,RegistrationDTOResponse.class);
 
+    }
+
+    @GetMapping
+    public Page<RegistrationDTOResponse> find(RegistrationDTORequestFilter dto, Pageable pageable) {
+        Registration filter = modelMapper.map(dto, Registration.class);
+        Page<Registration> result = service.find(filter, pageable);
+
+        List<RegistrationDTOResponse> list = result.getContent()
+                .stream()
+                .map(entity -> modelMapper.map(entity, RegistrationDTOResponse.class))
+                .collect(Collectors.toList());
+
+        return new PageImpl<RegistrationDTOResponse>(list, pageable, result.getTotalElements());
     }
 
     @GetMapping("/{id}")

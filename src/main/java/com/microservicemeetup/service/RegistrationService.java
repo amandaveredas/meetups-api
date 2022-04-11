@@ -5,6 +5,7 @@ import com.microservicemeetup.exception.RegistrationNotFoundException;
 import com.microservicemeetup.model.entity.Registration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
@@ -18,7 +19,7 @@ public interface RegistrationService {
 
     Registration update(Long id, Registration registration) throws EmailAlreadyExistsException;
 
-    Page<Registration> find(Registration filter, PageRequest pageRequest);
+    Page<Registration> find(Registration filter, Pageable pageable);
 
     Optional<Registration> getRegistrationByRegistrationVersion(String registrationVersion);
 }
