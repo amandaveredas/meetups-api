@@ -14,7 +14,7 @@ public interface RegistrationService {
 
     Optional<Registration> getById(Long id) throws RegistrationNotFoundException;
 
-    void delete(Registration registration) throws RegistrationNotFoundException;
+    void delete(Long id) throws RegistrationNotFoundException;
 
     Registration update(Long id, Registration registration) throws EmailAlreadyExistsException;
 

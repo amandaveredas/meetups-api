@@ -4,6 +4,7 @@ import com.microservicemeetup.controller.exceptions.ApiErrors;
 import com.microservicemeetup.exception.EmailAlreadyExistsException;
 import com.microservicemeetup.exception.RegistrationNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -36,7 +37,7 @@ public class ApplicationControllerAdvice {
 
     @ExceptionHandler(ResponseStatusException.class)
     @ResponseStatus
-    public ApiErrors handleResponseStatusException(ResponseStatusException e){
-        return new ApiErrors(e);
+    public ResponseEntity handleResponseStatusException(ResponseStatusException e){
+        return new ResponseEntity(new ApiErrors(e), e.getStatus());
     }
 }

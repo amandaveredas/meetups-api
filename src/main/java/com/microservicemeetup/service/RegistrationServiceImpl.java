@@ -36,25 +36,21 @@ public class RegistrationServiceImpl implements RegistrationService{
     }
 
     @Override
-    public Optional<Registration> getById(Long id) throws RegistrationNotFoundException {
+    public Optional<Registration> getById(Long id) throws RegistrationNotFoundException, IllegalArgumentException {
+        verifyNullId(id);
+
         Optional<Registration> foundRegistration = repository.findById(id);
 
         if(foundRegistration.isEmpty()){
-            throw new RegistrationNotFoundException("Não foi possível encontrar o registro com o id informado.");
+            throw new RegistrationNotFoundException();
         }
         return foundRegistration;
     }
 
     @Override
-    public void delete(Registration registration) throws RegistrationNotFoundException{
-        Long id = registration.getId();
-        verifyNullId(id);
-        verifyNullRegistration(registration);
-
-        if (!verifyIfExistsById(id))
-            throw new RegistrationNotFoundException("Registro não encontrado!");
-
-        repository.delete(registration);
+    public void delete(Long id) throws RegistrationNotFoundException{
+        this.getById(id);
+        repository.deleteById(id);
     }
 
 
@@ -121,19 +117,10 @@ public class RegistrationServiceImpl implements RegistrationService{
     }
 
 
-    private void verifyNullId(Long id ) {
+    private void verifyNullId(Long id ) throws IllegalArgumentException{
         if(id == null){
             throw new IllegalArgumentException("Registro ou registro_id não podem ser nulos!!");
         }
     }
 
-    private void verifyNullRegistration(Registration registration) {
-        if(registration == null){
-            throw new IllegalArgumentException("Registro ou registro_id não podem ser nulos!!");
-        }
-    }
-
-    private boolean verifyIfExistsById(Long id) throws RegistrationNotFoundException {
-        return repository.existsById(id);
-    }
 }

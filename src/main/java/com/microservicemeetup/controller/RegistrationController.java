@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 
 @RestController
@@ -45,6 +46,22 @@ public class RegistrationController {
         return service
                 .getById(id)
                 .map(registration -> modelMapper.map(registration,RegistrationDTOResponse.class))
-                .orElseThrow(() -> new RegistrationNotFoundException("Não foi possível encontrar o registro com o id informado."));
+                .orElseThrow(RegistrationNotFoundException::new);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById (@PathVariable Long id) throws RegistrationNotFoundException {
+        service.getById(id);
+        service.delete(id);
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public RegistrationDTOResponse updateById (@PathVariable Long id, @RequestBody RegistrationDTORequest dtoRequest) throws EmailAlreadyExistsException {
+        Registration entity = modelMapper.map(dtoRequest,Registration.class);
+        entity = service.update(id,entity);
+
+        return modelMapper.map(entity,RegistrationDTOResponse.class);
     }
 }

@@ -122,10 +122,10 @@ PathVariable: {id}
 
         BODY: Vazio
 
-## "/delete/{registration}"
+## "/delete/{id}"
 
 ## Request:
-   PathVariable: Registration
+   PathVariable: id
 
 ## Response:
 

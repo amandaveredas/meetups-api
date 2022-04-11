@@ -30,6 +30,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -146,13 +148,13 @@ public class RegistrationServiceTest {
 
     @Test
     @DisplayName("Should delete a registration")
-    void deleteRegistrationdWithSucces() {
+    void deleteRegistrationdWithSucces() throws RegistrationNotFoundException {
         Long id = 1L;
         Registration registration = Registration.builder().id(id).build();
-        Mockito.when(repository.existsById(id)).thenReturn(true);
+        Mockito.when(repository.findById(anyLong())).thenReturn(Optional.of(registration));
 
-        Assertions.assertDoesNotThrow(() -> registrationService.delete(registration));
-        Mockito.verify(repository,Mockito.times(1)).delete(registration);
+        Assertions.assertDoesNotThrow(() -> registrationService.delete(id));
+        Mockito.verify(repository,Mockito.times(1)).deleteById(id);
     }
 
     @Test
@@ -161,7 +163,7 @@ public class RegistrationServiceTest {
         Registration registration = Registration.builder().build();
         String expectedMessage = "Registro ou registro_id não podem ser nulos!!";
 
-        Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.delete(registration));
+        Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.delete(registration.getId()));
 
 
         assertThat(e)
@@ -175,16 +177,14 @@ public class RegistrationServiceTest {
     void shouldNotDeleteRegistrationNotFound() {
         Long id = 1L;
         Registration registration = Registration.builder().id(id).build();
-        Mockito.when(repository.existsById(id)).thenReturn(false);
-        String expectedMessage = "Registro não encontrado!";
+        String expectedMessage = "Não foi possível encontrar o registro com o id informado.";
 
-        Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.delete(registration));
+        Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.delete(id));
 
 
         assertThat(e)
                 .isInstanceOf(RegistrationNotFoundException.class)
                 .hasMessage(expectedMessage);
-        Mockito.verify(repository,Mockito.times(1)).existsById(id);
         Mockito.verify(repository,Mockito.never()).delete(registration);
 
     }
@@ -299,7 +299,7 @@ public class RegistrationServiceTest {
         Page<Registration> page = new PageImpl<Registration>(Arrays.asList(registration),
                 PageRequest.of(0,10),1);
 
-        Mockito.when(repository.findAll(Mockito.any(Example.class),Mockito.any(PageRequest.class)))
+        Mockito.when(repository.findAll(any(Example.class), any(PageRequest.class)))
                 .thenReturn(page);
 
         Page<Registration> result = registrationService.find(registration,pageRequest);

@@ -17,4 +17,6 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
     Registration findByEmail(String email);
 
     Optional<Registration> findByRegistrationVersion(String registrationAtribute);
+
+    void deleteById(Long id);
 }
