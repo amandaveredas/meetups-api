@@ -272,7 +272,7 @@ public class RegistrationServiceTest {
 
         Mockito.when(repository.existsByEmail(receivedRegistration.getEmail())).thenReturn(true);
         Mockito.when(repository.findById(id)).thenReturn(Optional.of(createdValidRegistrationWithId()));
-        Mockito.when(repository.findByEmail(receivedRegistration.getEmail())).thenReturn(registrationFoundByEmail);
+        Mockito.when(repository.findByEmail(receivedRegistration.getEmail())).thenReturn(Optional.of(registrationFoundByEmail));
         String expectedMessage = "Já existe um usuário cadastrado com esse email.";
 
 

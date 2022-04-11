@@ -102,7 +102,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 
     private void verifyDuplicatedEmail(Long id, Registration registration) throws EmailAlreadyExistsException {
         if(repository.existsByEmail(registration.getEmail())){
-            if (repository.findByEmail(registration.getEmail()).getId() != id)
+            if (repository.findByEmail(registration.getEmail()).get().getId() != id)
                 throw new EmailAlreadyExistsException();
         }
     }

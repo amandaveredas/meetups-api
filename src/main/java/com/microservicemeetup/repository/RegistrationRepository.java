@@ -9,14 +9,25 @@ import java.util.Optional;
 @Repository
 public interface RegistrationRepository extends JpaRepository<Registration, Long> {
 
-    Boolean existsByEmail(String email);
-    Registration save(Registration registration);
-
     boolean existsByRegistrationVersion(String registration);
 
-    Registration findByEmail(String email);
+    Boolean existsByEmail(String email);
+
+    Optional<Registration> findById(Long id);
 
     Optional<Registration> findByRegistrationVersion(String registrationAtribute);
 
+    Optional<Registration> findByEmail(String email);
+
+    Registration save(Registration registration);
+
     void deleteById(Long id);
+
+
+
+
+
+
+
+
 }
