@@ -1,153 +1,25 @@
-# Cenários:
+# AGENDADOR DE MEETUPS
 
-## "get/{id}"
-   
-### Request:
-PathVariable: {id}
+O objetivo desse serviço é possibilitar o agendamento de encontros online/presenciais.
 
-### Response:
-   1. succes:
+Funcionalidades na V.0.1:
 
-        STATUS: 200
-        
-        BODY: RegistrationDtoResponse
-   2. not found:
+* Criar um registro,
+* Alterar um registro
+* Buscar um registro
+* Buscar todos os registros
+* Filtrar registros
+* Excluir um registro
+* Criar um meetup
+* Alterar um meetup
+* Buscar um meetup
+* Buscar todos os meetups
+* Filtrar meetups
+* Excluir uma meetup
+* Cadastrar o registro em uma meetup
 
-      STATUS: 404
-   
-      EXCEPTION: RegistrationNotFoundException
-
-      BODY: "Não foi possível encontrar o registro com o id informado."
-
-## "/get"
-
-### Request:
-   Vazio.
-
-### Response
-1. succes:
-
-   STATUS: 200
-
-   BODY: Page<RegistrationDtoResponse>
-2. internal server error:
-
-   STATUS: 500
-
-   EXCEPTION: Qualquer Exception.
-
-   BODY: Vazio
-
-## "/post"
-
-### Request:
-   Body: RegistrationDtoRequest
-
-### Response:
-   1. created:
-
-      STATUS: 201
-
-      BODY: RegistrationDTOResponse
-   2. bad request:
-
-       STATUS: 400
-
-       EXCEPTION: EmailAlreadyExistsException
-
-       BODY: "Já existe um usuário cadastrado com esse email."
-   3. bad request:
-
-       STATUS: 400
-
-       EXCEPTION: Validation Constraint
-
-       BODY: Validation constraint message
-   4. bad request:
-
-      STATUS: 400
-
-      EXCEPTION: Validation Constraint
-
-      BODY: "Validation constraint message
-   5. internal server error:
-      STATUS: 500
-
-      EXCEPTION: Qualquer Exception exceto as acima
-
-      BODY: Vazio
-
-## "put/{id}"
-
-## Request:
-   PathVariable : id
-   Body: RegistrationDtoRequest
-
-## Response:
-  1. created (se o registration não existir):
-
-     STATUS: 201
-
-     BODY: RegistrationDTOResponse
-  2.ok (se o registration existir):
-
-     STATUS: 200
-
-     BODY: RegistrationDTOResponse
-  2. bad request:
-
-     STATUS: 400
-
-     EXCEPTION: EmailAlreadyExistsException
-
-     BODY: "Já existe um registro cadastrado com esses dados."
-  3. bad request:
-
-        STATUS: 400
-
-        EXCEPTION: EmptyEmailException
-
-        BODY: "O campo email é obrigatório."
-  4. bad request:
-
-        STATUS: 400
-
-        EXCEPTION: EmptyNameException
-
-        BODY: "O campo nome é obrigatório."
-  5. internal server error:
-        STATUS: 500
-
-        EXCEPTION: Qualquer Exception exceto as acima
-
-        BODY: Vazio
-
-## "/delete/{id}"
-
-## Request:
-   PathVariable: id
-
-## Response:
-
- 1. no content
-   
-    STATUS: 204
-
-    BODY: Vazio
- 2. bad request:
-
-    STATUS: 400
-
-    EXCEPTION: IllegalArgumentException
-
-    BODY: "Registro ou registro_id não podem ser nulos!!"
- 3. not found:
-
-    STATUS: 404
-
-    EXCEPTION: RegistrationNotFoundException
-
-    BODY: Registro não encontrado!"
+## Documentação:
+[Swagger](http://localhost:8080/swagger-ui.html#/)
 
 
 ### Reference Documentation
