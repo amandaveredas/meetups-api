@@ -1,4 +1,4 @@
-package com.microservicemeetup.model.dto;
+package com.microservicemeetup.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,21 +6,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RegistrationDTOResponse {
-    private Long id;
+public class RegistrationDTORequest {
 
-    private String registrationVersion;
-
+    @NotBlank
     private String name;
 
-    private LocalDate dateOfRegistration;
-
+    @NotBlank
     private String email;
+
 }

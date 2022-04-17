@@ -1,18 +1,18 @@
 package com.microservicemeetup.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microservicemeetup.controller.resource.RegistrationController;
 import com.microservicemeetup.exception.EmailAlreadyExistsException;
 import com.microservicemeetup.exception.RegistrationNotFoundException;
 import com.microservicemeetup.model.entity.Registration;
-import com.microservicemeetup.model.dto.RegistrationDTORequest;
+import com.microservicemeetup.controller.dto.RegistrationDTORequest;
 import com.microservicemeetup.service.RegistrationService;
-import com.microservicemeetup.service.RegistrationServiceImpl;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
+import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;

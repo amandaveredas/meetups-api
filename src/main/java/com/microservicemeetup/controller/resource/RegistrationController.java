@@ -1,11 +1,11 @@
-package com.microservicemeetup.controller;
+package com.microservicemeetup.controller.resource;
 
 import com.microservicemeetup.exception.EmailAlreadyExistsException;
 import com.microservicemeetup.exception.RegistrationNotFoundException;
-import com.microservicemeetup.model.dto.RegistrationDTORequestFilter;
+import com.microservicemeetup.controller.dto.RegistrationDTORequestFilter;
 import com.microservicemeetup.model.entity.Registration;
-import com.microservicemeetup.model.dto.RegistrationDTORequest;
-import com.microservicemeetup.model.dto.RegistrationDTOResponse;
+import com.microservicemeetup.controller.dto.RegistrationDTORequest;
+import com.microservicemeetup.controller.dto.RegistrationDTOResponse;
 import com.microservicemeetup.service.RegistrationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 

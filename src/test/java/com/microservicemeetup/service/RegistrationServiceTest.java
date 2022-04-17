@@ -3,7 +3,7 @@ package com.microservicemeetup.service;
 import com.microservicemeetup.exception.EmailAlreadyExistsException;
 import com.microservicemeetup.exception.RegistrationNotFoundException;
 import com.microservicemeetup.model.entity.Registration;
-import com.microservicemeetup.model.dto.RegistrationDTORequest;
+import com.microservicemeetup.controller.dto.RegistrationDTORequest;
 import com.microservicemeetup.repository.RegistrationRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +32,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -55,11 +56,11 @@ public class RegistrationServiceTest {
 
     @Test
     @DisplayName("Should save an registration")
-    public void saveRegistrationWithSucces() throws EmailAlreadyExistsException {
+    public void saveRegistrationWithSucces() throws Exception {
 
         Registration registration = createdValidRegistrationWithoutId();
+        Mockito.when(registrationService.verifyIfExistsByEmail(registration)).thenReturn(false);
 
-        Mockito.when(repository.existsByEmail(Mockito.anyString())).thenReturn(false);
         Mockito.when(repository.save(registration)).thenReturn(createdValidRegistrationWithId());
 
         Registration savedRegistration = registrationService.save(registration);
@@ -74,15 +75,12 @@ public class RegistrationServiceTest {
 
     @Test
     @DisplayName("Should return an EmailAlreadyExistsException")
-    public void shouldNotSaveRegistrationWithDuplicatedEmail() {
+    public void shouldNotSaveRegistrationWithDuplicatedEmail() throws Exception {
         Registration registration = createdValidRegistrationWithoutId();
         String expectedMessage = "Já existe um usuário cadastrado com esse email.";
-
-
-        Mockito.when(repository.existsByEmail(Mockito.anyString())).thenReturn(true);
+        Mockito.when(registrationService.verifyIfExistsByEmail(registration)).thenThrow(new EmailAlreadyExistsException());
 
         Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.save(registration));
-
 
         assertThat(e)
                 .isInstanceOf(EmailAlreadyExistsException.class)
@@ -95,10 +93,8 @@ public class RegistrationServiceTest {
     public void shouldNotSaveEmptyFields() {
         RegistrationDTORequest registrationDTORequest = createdEmptyEmailAndNameRegistrationDTORequest();
 
-
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
         Set<ConstraintViolation<RegistrationDTORequest>> violations = validator.validate(registrationDTORequest);
-
 
         Assertions.assertEquals(2,violations.size());
 
@@ -118,7 +114,6 @@ public class RegistrationServiceTest {
 
 
         Optional<Registration> foundRegistration = registrationService.getById(id);
-
 
         assertThat(foundRegistration).isPresent();
         assertThat(foundRegistration.get().getId()).isEqualTo(id);
@@ -144,6 +139,20 @@ public class RegistrationServiceTest {
                 .hasMessage(expectedMessage);
     }
 
+    @Test
+    @DisplayName("Should throw illegal argument exception because id is null")
+    void shouldThrownAnExceptionARegistrationById() {
+        Long id = null;
+        String expectedMessage = "Registro ou registro_id não podem ser nulos!!";
+
+        Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.getById(id));
+
+        assertThat(e)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(expectedMessage);
+    }
+
+
     //*************************************  delete()
 
     @Test
@@ -152,6 +161,7 @@ public class RegistrationServiceTest {
         Long id = 1L;
         Registration registration = Registration.builder().id(id).build();
         Mockito.when(repository.findById(anyLong())).thenReturn(Optional.of(registration));
+        Mockito.when(registrationService.getById(id)).thenReturn(Optional.of(registration));
 
         Assertions.assertDoesNotThrow(() -> registrationService.delete(id));
         Mockito.verify(repository,Mockito.times(1)).deleteById(id);
@@ -181,7 +191,6 @@ public class RegistrationServiceTest {
 
         Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.delete(id));
 
-
         assertThat(e)
                 .isInstanceOf(RegistrationNotFoundException.class)
                 .hasMessage(expectedMessage);
@@ -200,6 +209,11 @@ public class RegistrationServiceTest {
                 .email("amanda2@teste.com.br")
                 .build();
 
+        Registration actualRegistration = receivedRegistration;
+        actualRegistration.setRegistrationVersion("001");
+
+        Registration updatedRegistrationVersion = actualRegistration;
+
         Registration expectedRegistration = Registration.builder()
                 .id(id)
                 .name(receivedRegistration.getName())
@@ -208,7 +222,7 @@ public class RegistrationServiceTest {
                 .dateOfRegistration(LocalDate.now())
                 .build();
 
-        Mockito.when(repository.existsByEmail(receivedRegistration.getEmail())).thenReturn(false);
+        Mockito.when(registrationService.verifyDuplicatedEmail(id,receivedRegistration)).thenReturn(false);
         Mockito.when(repository.findById(id)).thenReturn(Optional.of(createdValidRegistrationWithId()));
         Mockito.when(repository.save(expectedRegistration)).thenReturn(expectedRegistration);
 
@@ -226,9 +240,8 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    @DisplayName("Create a new Registration when si required to update a registration what doesn't exists.")
+    @DisplayName("Create a new Registration when is required to update a registration what doesn't exists.")
     void updateRegistrationDontExistsButWillBeCreatedWithSucces() throws EmailAlreadyExistsException {
-        Long receveidId = 5L;
         Long newId = 2L;
         Registration receivedRegistration = Registration.builder()
                 .name("Amanda Santos")
@@ -244,11 +257,11 @@ public class RegistrationServiceTest {
                 .build();
 
         Mockito.when(repository.existsByEmail(receivedRegistration.getEmail())).thenReturn(false);
-        Mockito.when(repository.findById(receveidId)).thenReturn(Optional.empty());
+        Mockito.when(repository.findById(anyLong())).thenReturn(Optional.empty());
         Mockito.when(registrationService.save(receivedRegistration)).thenReturn(expectedRegistration);
 
 
-        Registration updatedRegistration = registrationService.update(receveidId, receivedRegistration);
+        Registration updatedRegistration = registrationService.update(anyLong(), receivedRegistration);
 
 
         assertThat(newId).isEqualTo(updatedRegistration.getId());
@@ -256,7 +269,7 @@ public class RegistrationServiceTest {
         assertThat(expectedRegistration.getEmail()).isEqualTo(updatedRegistration.getEmail());
         assertThat(expectedRegistration.getDateOfRegistration()).isEqualTo(updatedRegistration.getDateOfRegistration());
         assertThat(expectedRegistration.getRegistrationVersion()).isEqualTo(updatedRegistration.getRegistrationVersion());
-        Mockito.verify(repository,Mockito.times(1)).findById(receveidId);
+        Mockito.verify(repository,Mockito.times(1)).findById(anyLong());
     }
 
     @Test
@@ -270,9 +283,8 @@ public class RegistrationServiceTest {
         Registration registrationFoundByEmail = Registration.builder()
                 .id(2L).build();
 
-        Mockito.when(repository.existsByEmail(receivedRegistration.getEmail())).thenReturn(true);
+        Mockito.when(registrationService.verifyDuplicatedEmail(id,receivedRegistration)).thenThrow(new EmailAlreadyExistsException());
         Mockito.when(repository.findById(id)).thenReturn(Optional.of(createdValidRegistrationWithId()));
-        Mockito.when(repository.findByEmail(receivedRegistration.getEmail())).thenReturn(Optional.of(registrationFoundByEmail));
         String expectedMessage = "Já existe um usuário cadastrado com esse email.";
 
 

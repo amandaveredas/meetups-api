@@ -61,7 +61,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 
         //udating a version
         verifyDuplicatedEmail(id, registration);
-        String updatedVersion = getUpdatedVersion(actualRegistration);
+        String updatedVersion = getUpdatedVersion(actualRegistration.get());
 
         Registration updatedRegistration = Registration.builder()
                 .id(id)
@@ -91,33 +91,36 @@ public class RegistrationServiceImpl implements RegistrationService{
         return repository.findByRegistrationVersion(registrationAtribute);
     }
 
-    private String getUpdatedVersion(Optional<Registration> actualRegistration) {
+    protected String getUpdatedVersion(Registration actualRegistration) {
         return "00" +
-                String.valueOf(Integer.parseInt(actualRegistration.get().getRegistrationVersion()) + 1);
+                String.valueOf(Integer.parseInt(actualRegistration.getRegistrationVersion()) + 1);
     }
 
-    private Registration createANewRegister(Registration registration) throws EmailAlreadyExistsException {
+    protected Registration createANewRegister(Registration registration) throws EmailAlreadyExistsException {
         return this.save(registration);
     }
 
-    private void verifyDuplicatedEmail(Long id, Registration registration) throws EmailAlreadyExistsException {
+    protected boolean verifyDuplicatedEmail(Long id, Registration registration) throws EmailAlreadyExistsException {
         if(repository.existsByEmail(registration.getEmail())){
             if (repository.findByEmail(registration.getEmail()).get().getId() != id)
                 throw new EmailAlreadyExistsException();
         }
+        return false;
     }
 
-    private void verifyIfExistsByEmail(Registration registration) throws EmailAlreadyExistsException {
+    protected boolean verifyIfExistsByEmail(Registration registration) throws EmailAlreadyExistsException {
         if(repository.existsByEmail(registration.getEmail())){
             throw new EmailAlreadyExistsException();
         }
+        return false;
     }
 
 
-    private void verifyNullId(Long id ) throws IllegalArgumentException{
+    protected boolean verifyNullId(Long id ) throws IllegalArgumentException{
         if(id == null){
             throw new IllegalArgumentException("Registro ou registro_id não podem ser nulos!!");
         }
+        return false;
     }
 
 }

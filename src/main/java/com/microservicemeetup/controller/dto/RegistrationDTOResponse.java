@@ -1,4 +1,4 @@
-package com.microservicemeetup.model.dto;
+package com.microservicemeetup.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RegistrationDTORequestFilter {
+public class RegistrationDTOResponse {
     private Long id;
 
     private String registrationVersion;
