@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class RegistrationDTOResponse {
     private Long id;
 
-    private String registrationVersion;
+    private String registrationAttribute;
 
     private String name;
 

@@ -20,8 +20,8 @@ public class Registration {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "registration_version")
-    private String registrationVersion;
+    @Column(name = "registration_attribute")
+    private String registrationAttribute;
 
     @Column(name = "user_name")
     private String name;

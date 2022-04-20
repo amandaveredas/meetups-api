@@ -11,11 +11,9 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
-
 public class RegistrationServiceImpl implements RegistrationService{
 
     private RegistrationRepository repository;
-    private String firstRegistration = "001";
 
     public RegistrationServiceImpl(RegistrationRepository repository) {
         this.repository = repository;
@@ -27,7 +25,6 @@ public class RegistrationServiceImpl implements RegistrationService{
         verifyIfExistsByEmail(registration);
 
         registration.setDateOfRegistration(LocalDate.now());
-        registration.setRegistrationVersion(firstRegistration);
 
         return repository.save(registration);
     }
@@ -61,14 +58,12 @@ public class RegistrationServiceImpl implements RegistrationService{
 
         //udating a version
         verifyDuplicatedEmail(id, registration);
-        String updatedVersion = getUpdatedVersion(actualRegistration.get());
-
         Registration updatedRegistration = Registration.builder()
                 .id(id)
                 .name(registration.getName())
                 .email(registration.getEmail())
                 .dateOfRegistration(LocalDate.now())
-                .registrationVersion(updatedVersion)
+                .registrationAttribute(registration.getRegistrationAttribute())
                 .build();
 
         return repository.save(updatedRegistration);
@@ -88,12 +83,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 
     @Override
     public Optional<Registration> getRegistrationByRegistrationVersion(String registrationAtribute) {
-        return repository.findByRegistrationVersion(registrationAtribute);
-    }
-
-    protected String getUpdatedVersion(Registration actualRegistration) {
-        return "00" +
-                String.valueOf(Integer.parseInt(actualRegistration.getRegistrationVersion()) + 1);
+        return repository.findByRegistrationAttribute(registrationAtribute);
     }
 
     protected Registration createANewRegister(Registration registration) throws EmailAlreadyExistsException {

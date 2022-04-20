@@ -72,7 +72,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("name").value("Amanda Lima"))
                 .andExpect(jsonPath("email").value("amanda@teste.com"))
                 .andExpect(jsonPath("dateOfRegistration").value(LocalDate.now().toString()))
-                .andExpect(jsonPath("registrationVersion").value("001"));
+                .andExpect(jsonPath("registrationAttribute").value("001"));
 
 
     }
@@ -84,6 +84,7 @@ public class RegistrationControllerTest {
         Registration registration = Registration.builder()
                 .name(dtoRequest.getName())
                 .email(dtoRequest.getEmail())
+                .registrationAttribute(dtoRequest.getRegistrationAttribute())
                 .build();
         String json = new ObjectMapper().writeValueAsString(dtoRequest);
 
@@ -121,7 +122,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("name").value(foundRegistration.getName()))
                 .andExpect(jsonPath("email").value(foundRegistration.getEmail()))
                 .andExpect(jsonPath("dateOfRegistration").value(foundRegistration.getDateOfRegistration().toString()))
-                .andExpect(jsonPath("registrationVersion").value(foundRegistration.getRegistrationVersion()));
+                .andExpect(jsonPath("registrationAttribute").value(foundRegistration.getRegistrationAttribute()));
     }
 
     @Test
@@ -153,7 +154,7 @@ public class RegistrationControllerTest {
                 .name(createRegistration().getName())
                 .email(createRegistration().getEmail())
                 .dateOfRegistration(createRegistration().getDateOfRegistration())
-                .registrationVersion(createRegistration().getRegistrationVersion())
+                .registrationAttribute(createRegistration().getRegistrationAttribute())
                 .build();
 
         BDDMockito.given(service.find(Mockito.any(Registration.class), Mockito.any(Pageable.class)) )
@@ -233,7 +234,7 @@ public class RegistrationControllerTest {
                 .name("Amanda Lima Santos")
                 .dateOfRegistration(LocalDate.now())
                 .email("amanda2@teste.com")
-                .registrationVersion("002").build();
+                .registrationAttribute("002").build();
 
         BDDMockito.given(service.update(eq(id),any(Registration.class))).willReturn(updatedRegistration);
 
@@ -250,7 +251,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("name").value("Amanda Lima Santos"))
                 .andExpect(jsonPath("email").value("amanda2@teste.com"))
                 .andExpect(jsonPath("dateOfRegistration").value(LocalDate.now().toString()))
-                .andExpect(jsonPath("registrationVersion").value("002"));
+                .andExpect(jsonPath("registrationAttribute").value("002"));
 
     }
 
@@ -301,7 +302,7 @@ public class RegistrationControllerTest {
                 .name("Amanda Lima")
                 .email("amanda@teste.com")
                 .dateOfRegistration(LocalDate.now())
-                .registrationVersion("001")
+                .registrationAttribute("001")
                 .build();
     }
 
@@ -309,6 +310,7 @@ public class RegistrationControllerTest {
         return RegistrationDTORequest.builder()
                 .name("Amanda Lima")
                 .email("amanda@teste.com")
+                .registrationAttribute("001")
                 .build();
     }
 }

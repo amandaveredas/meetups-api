@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -34,7 +33,7 @@ public class RegistrationRepositoryTest {
         Registration registration = createNewRegistration();
         entityManager.persist(registration);
 
-        boolean exists = repository.existsByRegistrationVersion(createNewRegistration().getRegistrationVersion());
+        boolean exists = repository.existsByRegistrationAttribute(createNewRegistration().getRegistrationAttribute());
         Assertions.assertTrue(exists);
 
     }
@@ -44,7 +43,7 @@ public class RegistrationRepositoryTest {
     void returnFalseWhenRegistrationDoesntExistsByRegistrationVersion() {
         Registration registration = createNewRegistration();
 
-        boolean exists = repository.existsByRegistrationVersion(createNewRegistration().getRegistrationVersion());
+        boolean exists = repository.existsByRegistrationAttribute(createNewRegistration().getRegistrationAttribute());
         Assertions.assertFalse(exists);
 
     }
@@ -120,7 +119,7 @@ public class RegistrationRepositoryTest {
         Registration registration = createNewRegistration();
         entityManager.persist(registration);
 
-        Optional<Registration> foundRegistration = repository.findByRegistrationVersion(registration.getRegistrationVersion());
+        Optional<Registration> foundRegistration = repository.findByRegistrationAttribute(registration.getRegistrationAttribute());
 
         assertThat(foundRegistration).isPresent();
     }
@@ -130,7 +129,7 @@ public class RegistrationRepositoryTest {
     void notFindByRegistrationVersion() {
         Registration registration = createNewRegistration();
 
-        Optional<Registration> foundRegistration = repository.findByRegistrationVersion(registration.getRegistrationVersion());
+        Optional<Registration> foundRegistration = repository.findByRegistrationAttribute(registration.getRegistrationAttribute());
 
         assertThat(foundRegistration).isEmpty();
     }
@@ -168,6 +167,6 @@ public class RegistrationRepositoryTest {
                 .name("Amanda Lima")
                 .email("amanda@teste.com")
                 .dateOfRegistration(LocalDate.now())
-                .registrationVersion("001").build();
+                .registrationAttribute("001").build();
     }
 }

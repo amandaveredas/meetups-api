@@ -19,4 +19,7 @@ public class RegistrationDTORequest {
     @NotBlank
     private String email;
 
+    @NotBlank
+    private String registrationAttribute;
+
 }

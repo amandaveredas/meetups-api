@@ -1,9 +1,9 @@
 package com.microservicemeetup.service;
 
+import com.microservicemeetup.controller.dto.RegistrationDTORequest;
 import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
 import com.microservicemeetup.exceptions.RegistrationNotFoundException;
 import com.microservicemeetup.model.Registration;
-import com.microservicemeetup.controller.dto.RegistrationDTORequest;
 import com.microservicemeetup.repository.RegistrationRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,10 +29,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -70,7 +69,7 @@ public class RegistrationServiceTest {
         assertThat(savedRegistration.getName()).isEqualTo("Amanda Lima");
         assertThat(savedRegistration.getEmail()).isEqualTo("amanda@teste.com.br");
         assertThat(savedRegistration.getDateOfRegistration()).isEqualTo(LocalDate.now());
-        assertThat(savedRegistration.getRegistrationVersion()).isEqualTo("001");
+        assertThat(savedRegistration.getRegistrationAttribute()).isEqualTo("001");
     }
 
     @Test
@@ -89,14 +88,14 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    @DisplayName("Should return an Validation Error: Email or Name cannot be empty")
+    @DisplayName("Should return an Validation Error: Fields cannot be empty")
     public void shouldNotSaveEmptyFields() {
-        RegistrationDTORequest registrationDTORequest = createdEmptyEmailAndNameRegistrationDTORequest();
+        RegistrationDTORequest registrationDTORequest = createdEmptyFieldsRegistrationDTORequest();
 
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
         Set<ConstraintViolation<RegistrationDTORequest>> violations = validator.validate(registrationDTORequest);
 
-        Assertions.assertEquals(2,violations.size());
+        Assertions.assertEquals(3,violations.size());
 
     }
 
@@ -119,7 +118,7 @@ public class RegistrationServiceTest {
         assertThat(foundRegistration.get().getId()).isEqualTo(id);
         assertThat(foundRegistration.get().getName()).isEqualTo(registration.getName());
         assertThat(foundRegistration.get().getEmail()).isEqualTo(registration.getEmail());
-        assertThat(foundRegistration.get().getRegistrationVersion()).isEqualTo(registration.getRegistrationVersion());
+        assertThat(foundRegistration.get().getRegistrationAttribute()).isEqualTo(registration.getRegistrationAttribute());
         assertThat(foundRegistration.get().getDateOfRegistration()).isEqualTo(registration.getDateOfRegistration());
 
     }
@@ -207,18 +206,15 @@ public class RegistrationServiceTest {
         Registration receivedRegistration = Registration.builder()
                 .name("Amanda Santos")
                 .email("amanda2@teste.com.br")
+                .registrationAttribute("002")
                 .build();
 
-        Registration actualRegistration = receivedRegistration;
-        actualRegistration.setRegistrationVersion("001");
-
-        Registration updatedRegistrationVersion = actualRegistration;
 
         Registration expectedRegistration = Registration.builder()
                 .id(id)
                 .name(receivedRegistration.getName())
                 .email(receivedRegistration.getEmail())
-                .registrationVersion("002")
+                .registrationAttribute(receivedRegistration.getRegistrationAttribute())
                 .dateOfRegistration(LocalDate.now())
                 .build();
 
@@ -234,7 +230,7 @@ public class RegistrationServiceTest {
         assertThat(expectedRegistration.getName()).isEqualTo(updatedRegistration.getName());
         assertThat(expectedRegistration.getEmail()).isEqualTo(updatedRegistration.getEmail());
         assertThat(expectedRegistration.getDateOfRegistration()).isEqualTo(updatedRegistration.getDateOfRegistration());
-        assertThat(expectedRegistration.getRegistrationVersion()).isEqualTo(updatedRegistration.getRegistrationVersion());
+        assertThat(expectedRegistration.getRegistrationAttribute()).isEqualTo(updatedRegistration.getRegistrationAttribute());
         Mockito.verify(repository,Mockito.times(1)).findById(id);
         Mockito.verify(repository,Mockito.times(1)).save(expectedRegistration);
     }
@@ -252,7 +248,7 @@ public class RegistrationServiceTest {
                 .id(newId)
                 .name(receivedRegistration.getName())
                 .email(receivedRegistration.getEmail())
-                .registrationVersion("002")
+                .registrationAttribute("002")
                 .dateOfRegistration(LocalDate.now())
                 .build();
 
@@ -268,7 +264,7 @@ public class RegistrationServiceTest {
         assertThat(expectedRegistration.getName()).isEqualTo(updatedRegistration.getName());
         assertThat(expectedRegistration.getEmail()).isEqualTo(updatedRegistration.getEmail());
         assertThat(expectedRegistration.getDateOfRegistration()).isEqualTo(updatedRegistration.getDateOfRegistration());
-        assertThat(expectedRegistration.getRegistrationVersion()).isEqualTo(updatedRegistration.getRegistrationVersion());
+        assertThat(expectedRegistration.getRegistrationAttribute()).isEqualTo(updatedRegistration.getRegistrationAttribute());
         Mockito.verify(repository,Mockito.times(1)).findById(anyLong());
     }
 
@@ -327,26 +323,27 @@ public class RegistrationServiceTest {
     void getRegistrationByRegistrationAtribute() {
         String registrationAtribute = "234";
 
-        Mockito.when(repository.findByRegistrationVersion(registrationAtribute))
+        Mockito.when(repository.findByRegistrationAttribute(registrationAtribute))
                 .thenReturn(Optional.of
                         (Registration
                                 .builder()
                                 .id(11L)
-                                .registrationVersion(registrationAtribute)
+                                .registrationAttribute(registrationAtribute)
                                 .build()));
 
         Optional<Registration> registration = registrationService.getRegistrationByRegistrationVersion(registrationAtribute);
 
         assertThat(registration.isPresent()).isTrue();
         assertThat(registration.get().getId()).isEqualTo(11L);
-        assertThat(registration.get().getRegistrationVersion()).isEqualTo(registrationAtribute);
-        Mockito.verify(repository,Mockito.times(1)).findByRegistrationVersion(registrationAtribute);
+        assertThat(registration.get().getRegistrationAttribute()).isEqualTo(registrationAtribute);
+        Mockito.verify(repository,Mockito.times(1)).findByRegistrationAttribute(registrationAtribute);
     }
 
-    private RegistrationDTORequest createdEmptyEmailAndNameRegistrationDTORequest() {
+    private RegistrationDTORequest createdEmptyFieldsRegistrationDTORequest() {
         return RegistrationDTORequest.builder()
                 .name("")
                 .email("")
+                .registrationAttribute("")
                 .build();
     }
 
@@ -356,7 +353,7 @@ public class RegistrationServiceTest {
                 .name("Amanda Lima")
                 .email("amanda@teste.com.br")
                 .dateOfRegistration(LocalDate.now())
-                .registrationVersion("001")
+                .registrationAttribute("001")
                 .build();
     }
 
@@ -373,7 +370,7 @@ public class RegistrationServiceTest {
                 .name("Amanda Lima")
                 .email("amanda@teste.com.br")
                 .dateOfRegistration(LocalDate.now())
-                .registrationVersion("001")
+                .registrationAttribute("001")
                 .build();
     }
 }
