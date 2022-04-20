@@ -1,8 +1,8 @@
 package com.microservicemeetup.service;
 
-import com.microservicemeetup.exception.EmailAlreadyExistsException;
-import com.microservicemeetup.exception.RegistrationNotFoundException;
-import com.microservicemeetup.model.entity.Registration;
+import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
+import com.microservicemeetup.exceptions.RegistrationNotFoundException;
+import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.controller.dto.RegistrationDTORequest;
 import com.microservicemeetup.repository.RegistrationRepository;
 import org.junit.jupiter.api.Assertions;

@@ -18,7 +18,7 @@ public class RegistrationDTOResponse {
 
     private String name;
 
-    private LocalDate dateOfRegistration;
+    private String dateOfRegistration;
 
     private String email;
 }
