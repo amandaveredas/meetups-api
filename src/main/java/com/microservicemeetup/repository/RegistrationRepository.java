@@ -19,7 +19,7 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
 
     Optional<Registration> findById(Long id);
 
-    Optional<Registration> findByRegistrationAttribute(String registrationAtribute);
+    List<Registration> findByRegistrationAttribute(String registrationAtribute);
 
     Optional<Registration> findByEmail(String email);
 

@@ -20,5 +20,4 @@ public interface RegistrationService {
 
     Page<Registration> find(Registration filter, Pageable pageable);
 
-    Optional<Registration> getRegistrationByRegistrationVersion(String registrationVersion);
 }

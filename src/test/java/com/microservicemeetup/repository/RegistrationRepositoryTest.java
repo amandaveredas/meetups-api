@@ -12,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -114,22 +115,22 @@ public class RegistrationRepositoryTest {
     }
 
     @Test
-    @DisplayName("Should find a Registration By version")
-    void findByRegistrationVersion() {
+    @DisplayName("Should find a Registration By attribute")
+    void findByRegistrationAttribute() {
         Registration registration = createNewRegistration();
         entityManager.persist(registration);
 
-        Optional<Registration> foundRegistration = repository.findByRegistrationAttribute(registration.getRegistrationAttribute());
+        List<Registration> foundRegistration = repository.findByRegistrationAttribute(registration.getRegistrationAttribute());
 
-        assertThat(foundRegistration).isPresent();
+        assertThat(foundRegistration).hasSize(1);
     }
 
     @Test
-    @DisplayName("Should not find a Registration By version")
-    void notFindByRegistrationVersion() {
+    @DisplayName("Should not find a Registration By attribute")
+    void notFindByRegistrationAttribute() {
         Registration registration = createNewRegistration();
 
-        Optional<Registration> foundRegistration = repository.findByRegistrationAttribute(registration.getRegistrationAttribute());
+        List<Registration> foundRegistration = repository.findByRegistrationAttribute(registration.getRegistrationAttribute());
 
         assertThat(foundRegistration).isEmpty();
     }

@@ -81,11 +81,6 @@ public class RegistrationServiceImpl implements RegistrationService{
         return repository.findAll(example,pageable);
     }
 
-    @Override
-    public Optional<Registration> getRegistrationByRegistrationVersion(String registrationAtribute) {
-        return repository.findByRegistrationAttribute(registrationAtribute);
-    }
-
     protected Registration createANewRegister(Registration registration) throws EmailAlreadyExistsException {
         return this.save(registration);
     }

@@ -318,27 +318,6 @@ public class RegistrationServiceTest {
         assertThat(result.getPageable().getPageSize()).isEqualTo(10);
     }
 
-    @Test
-    @DisplayName("Should return a registration by registration attribute.")
-    void getRegistrationByRegistrationAtribute() {
-        String registrationAtribute = "234";
-
-        Mockito.when(repository.findByRegistrationAttribute(registrationAtribute))
-                .thenReturn(Optional.of
-                        (Registration
-                                .builder()
-                                .id(11L)
-                                .registrationAttribute(registrationAtribute)
-                                .build()));
-
-        Optional<Registration> registration = registrationService.getRegistrationByRegistrationVersion(registrationAtribute);
-
-        assertThat(registration.isPresent()).isTrue();
-        assertThat(registration.get().getId()).isEqualTo(11L);
-        assertThat(registration.get().getRegistrationAttribute()).isEqualTo(registrationAtribute);
-        Mockito.verify(repository,Mockito.times(1)).findByRegistrationAttribute(registrationAtribute);
-    }
-
     private RegistrationDTORequest createdEmptyFieldsRegistrationDTORequest() {
         return RegistrationDTORequest.builder()
                 .name("")
