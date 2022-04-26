@@ -4,7 +4,7 @@ O objetivo desse serviço é possibilitar o agendamento de encontros online/pres
 
 Funcionalidades na V.0.1:
 
-* Criar um registro,
+* Criar um registro
 * Alterar um registro
 * Buscar um registro
 * Buscar todos os registros
@@ -16,7 +16,7 @@ Funcionalidades na V.0.1:
 * Buscar todos os meetups
 * Filtrar meetups
 * Excluir uma meetup
-* Cadastrar o registro em uma meetup
+* Cadastrar registro(s) em uma meetup
 
 ## Documentação:
 [Swagger](http://localhost:8080/swagger-ui.html#/)

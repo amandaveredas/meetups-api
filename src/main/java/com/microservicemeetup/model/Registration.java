@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Data
@@ -31,5 +32,9 @@ public class Registration {
 
     @Column(name = "user_email")
     private String email;
+
+    @JoinColumn(name = "meetups_id")
+    @ManyToMany
+    private List<Meetup> meetups;
 
 }
