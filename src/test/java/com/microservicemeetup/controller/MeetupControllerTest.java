@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microservicemeetup.controller.dto.MeetupDTORequest;
 import com.microservicemeetup.controller.resource.MeetupController;
 import com.microservicemeetup.exceptions.DuplicatedMeetupException;
+import com.microservicemeetup.exceptions.MeetupNotFoundException;
+import com.microservicemeetup.exceptions.RegistrationNotFoundException;
 import com.microservicemeetup.model.Meetup;
 import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.service.MeetupService;
@@ -32,6 +34,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -124,6 +127,47 @@ public class MeetupControllerTest {
                 .andExpect(jsonPath("pageable.pageNumber"). value(0));
 
     }
+
+    //********************************** get by id
+
+
+    @Test
+    @DisplayName("Should get a Meetup with succes")
+    void shouldGetAMeetupByIdWithSuccess() throws Exception {
+        Long id = 1L;
+        Meetup foundMeetup = createMeetup();
+
+        BDDMockito.given(service.getById(id)).willReturn(Optional.of(foundMeetup));
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(MEETUP_API.concat("/"+id))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc
+                .perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(foundMeetup.getId()))
+                .andExpect(jsonPath("event").value(foundMeetup.getEvent()))
+                .andExpect(jsonPath("meetupDate").value("10-05-2022 19:00:00"))
+                .andExpect(jsonPath("registrationAttribute").value(foundMeetup.getRegistrationAttribute()));
+    }
+
+    @Test
+    @DisplayName("Should return a NotFound Status - 400, because of the Meetup wasn't found.")
+    void shouldReturnANotFoundStatus_whenGetMeetupById() throws Exception {
+        Long id = 1L;
+
+        BDDMockito.given(service.getById(id)).willThrow(MeetupNotFoundException.class);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(MEETUP_API.concat("/"+id))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc
+                .perform(requestBuilder)
+                .andExpect(status().isNotFound());
+    }
+
+
 
     private Meetup createMeetup() {
         return Meetup.builder()

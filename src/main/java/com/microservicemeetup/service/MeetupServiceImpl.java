@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MeetupServiceImpl implements MeetupService {
@@ -28,6 +29,11 @@ public class MeetupServiceImpl implements MeetupService {
     @Override
     public Page<Meetup> find(Meetup filter, Pageable pageable) {
         return null;
+    }
+
+    @Override
+    public Optional<Meetup> getById(Long id) {
+        return Optional.empty();
     }
 
 

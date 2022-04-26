@@ -1,6 +1,8 @@
 package com.microservicemeetup.controller.resource;
 
 import com.microservicemeetup.controller.dto.*;
+import com.microservicemeetup.exceptions.MeetupNotFoundException;
+import com.microservicemeetup.exceptions.RegistrationNotFoundException;
 import com.microservicemeetup.model.Meetup;
 import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.service.MeetupService;
@@ -49,6 +51,15 @@ public class MeetupController {
         return new PageImpl<MeetupDTOResponse>(list, pageable, result.getTotalElements());
     }
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public MeetupDTOResponse getById(@PathVariable Long id) throws MeetupNotFoundException{
+
+        return service
+                .getById(id)
+                .map(meetup -> modelMapper.map(meetup,MeetupDTOResponse.class))
+                .orElseThrow(MeetupNotFoundException::new);
+    }
 
 
 }
