@@ -25,6 +25,8 @@ public class MeetupDTOResponse {
 
     private String event;
 
+    private String registrationAttribute;
+    
     private List<Registration> registrations;
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

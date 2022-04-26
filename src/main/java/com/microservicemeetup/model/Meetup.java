@@ -35,8 +35,13 @@ public class Meetup {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime meetupDate;
 
-    @JoinColumn(name = "registrations_id")
+    @Column(name = "registration_attribute")
+    private String registrationAttribute;
+
+    @JoinColumn(name = "registrations")
     @ManyToMany
     private List<Registration> registrations;
+
+
 
 }

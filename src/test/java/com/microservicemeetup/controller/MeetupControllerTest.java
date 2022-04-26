@@ -3,6 +3,7 @@ package com.microservicemeetup.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microservicemeetup.controller.dto.MeetupDTORequest;
+import com.microservicemeetup.controller.resource.MeetupController;
 import com.microservicemeetup.controller.resource.RegistrationController;
 import com.microservicemeetup.model.Meetup;
 import com.microservicemeetup.model.Registration;
@@ -29,12 +30,13 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
-@WebMvcTest(controllers = {MeetupControllerTest.class})
+@WebMvcTest(controllers = {MeetupController.class})
 @AutoConfigureMockMvc
 public class MeetupControllerTest {
 
@@ -56,7 +58,7 @@ public class MeetupControllerTest {
         String json = new ObjectMapper().writeValueAsString(dtoRequest);
         Meetup meetup = createMeetup();
 
-        BDDMockito.when(meetupService.save(Mockito.any(Meetup.class))).thenReturn(meetup);
+        BDDMockito.given(meetupService.save(any(Meetup.class))).willReturn(meetup);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .post(MEETUP_API)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -68,31 +70,30 @@ public class MeetupControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(1L))
                 .andExpect(jsonPath("event").value("Alinhamento anual da liderança"))
-                .andExpect(jsonPath("registered").value(true))
-                .andExpect(jsonPath("registrations").value(createListOfRegistrations().toString()))
-                .andExpect(jsonPath("meetupDate").value(createMeetup().getMeetupDate().toString()));
-
+                .andExpect(jsonPath("meetupDate").value("10-05-2022 19:00:00"))
+                .andExpect(jsonPath("registrationAttribute").value("liderança"));
     }
 
+
+
+
     private Meetup createMeetup() {
-        Meetup meetup = Meetup.builder()
+        return Meetup.builder()
                 .id(1L)
-                .meetupDate(LocalDateTime.of(2022,05,10,19,00))
+                .meetupDate(LocalDateTime.of(2022,5,10,19,0))
                 .event("Alinhamento anual da liderança")
+                .registrationAttribute("liderança")
                 .registrations(createListOfRegistrations())
                 .build();
-
-        return meetup;
     }
 
     private MeetupDTORequest createMeetupDTORequest() {
-        MeetupDTORequest dtoRequest = MeetupDTORequest.builder()
-                .meetupDate(LocalDateTime.of(2022,05,10,19,00))
+
+        return MeetupDTORequest.builder()
+                .meetupDate(LocalDateTime.of(2022,5,10,19,0))
                 .event("Alinhamento anual da liderança")
                 .registrationAttribute("liderança")
                 .build();
-
-        return dtoRequest;
     }
 
     private List<Registration> createListOfRegistrations(){
