@@ -36,5 +36,15 @@ public class MeetupServiceImpl implements MeetupService {
         return Optional.empty();
     }
 
+    @Override
+    public void delete(Long id) {
+
+    }
+
+    @Override
+    public Meetup update(Long eq, Meetup any) {
+        return null;
+    }
+
 
 }

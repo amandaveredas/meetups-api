@@ -13,4 +13,8 @@ public interface MeetupService {
     Page<Meetup> find(Meetup filter, Pageable pageable);
 
     Optional<Meetup> getById(Long id);
+
+    void delete(Long id);
+
+    Meetup update(Long eq, Meetup any);
 }

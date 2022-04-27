@@ -15,8 +15,8 @@ Funcionalidades na V.0.1:
 * Buscar um meetup
 * Buscar todos os meetups
 * Filtrar meetups
-* Excluir uma meetup
-* Cadastrar registro(s) em uma meetup
+* Excluir um meetup
+
 
 ## Documentação:
 [Swagger](http://localhost:8080/swagger-ui.html#/)

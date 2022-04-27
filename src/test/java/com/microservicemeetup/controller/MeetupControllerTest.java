@@ -2,10 +2,9 @@ package com.microservicemeetup.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microservicemeetup.controller.dto.MeetupDTORequest;
+import com.microservicemeetup.controller.dto.RegistrationDTORequest;
 import com.microservicemeetup.controller.resource.MeetupController;
-import com.microservicemeetup.exceptions.DuplicatedMeetupException;
-import com.microservicemeetup.exceptions.MeetupNotFoundException;
-import com.microservicemeetup.exceptions.RegistrationNotFoundException;
+import com.microservicemeetup.exceptions.*;
 import com.microservicemeetup.model.Meetup;
 import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.service.MeetupService;
@@ -37,6 +36,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -165,6 +165,93 @@ public class MeetupControllerTest {
         mockMvc
                 .perform(requestBuilder)
                 .andExpect(status().isNotFound());
+    }
+
+    //********************************** delete
+
+
+    @Test
+    @DisplayName("Should delete a meetup by id and return No Content Status")
+    void shouldDeleteAMeetupWithSucces() throws Exception {
+        Long id = 1L;
+        BDDMockito.given(service.getById(id)).willReturn(Optional.of(createMeetup()));
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete(MEETUP_API.concat("/"+id))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc
+                .perform(requestBuilder)
+                .andExpect(status().isNoContent());
+
+    }
+
+    @Test
+    @DisplayName("Should return a NotFound Status because of the Meetup wasn't found.")
+    void shouldReturnANotFoundStatus_whenTryDeleteAMeetupById() throws Exception {
+        Long id = 1L;
+        BDDMockito.given(service.getById(id)).willThrow(MeetupNotFoundException.class);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete(MEETUP_API.concat("/"+id))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc
+                .perform(requestBuilder)
+                .andExpect(status().isNotFound());
+    }
+
+    //********************************************* update
+
+
+    @Test
+    @DisplayName("Should update an meetup with succes")
+    void shouldUpdatedAMeetupWithSucces() throws Exception {
+        Long id = 1L;
+
+        MeetupDTORequest dtoRequest = createMeetupDTORequest();
+        String json = new ObjectMapper().writeValueAsString(dtoRequest);
+        Meetup updatedMeetup = createMeetup();
+
+        BDDMockito.given(service.update(eq(id),any(Meetup.class))).willReturn(updatedMeetup);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put(MEETUP_API.concat("/"+id))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc
+                .perform(request)
+                .andExpect(status().isOk())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(updatedMeetup.getId()))
+                .andExpect(jsonPath("event").value(updatedMeetup.getEvent()))
+                .andExpect(jsonPath("meetupDate").value("10-05-2022 19:00:00"))
+                .andExpect(jsonPath("registrationAttribute").value(updatedMeetup.getRegistrationAttribute()));
+    }
+
+
+    @Test
+    @DisplayName("Should return a BadRequest Status because of duplicated meetup.")
+    void shouldNotUpdateDuplicatedMeetup() throws Exception {
+        Long id = 1L;
+
+        MeetupDTORequest dtoRequest = createMeetupDTORequest();
+        String json = new ObjectMapper().writeValueAsString(dtoRequest);
+
+        BDDMockito.given(service.update(eq(id),any(Meetup.class))).willThrow(MeetupAlreadyExistsException.class);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put(MEETUP_API.concat("/"+id))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc
+                .perform(request)
+                .andExpect(status().isBadRequest());
+
     }
 
 

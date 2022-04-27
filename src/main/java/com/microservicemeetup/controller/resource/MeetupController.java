@@ -1,6 +1,8 @@
 package com.microservicemeetup.controller.resource;
 
 import com.microservicemeetup.controller.dto.*;
+import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
+import com.microservicemeetup.exceptions.MeetupAlreadyExistsException;
 import com.microservicemeetup.exceptions.MeetupNotFoundException;
 import com.microservicemeetup.exceptions.RegistrationNotFoundException;
 import com.microservicemeetup.model.Meetup;
@@ -59,6 +61,22 @@ public class MeetupController {
                 .getById(id)
                 .map(meetup -> modelMapper.map(meetup,MeetupDTOResponse.class))
                 .orElseThrow(MeetupNotFoundException::new);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById (@PathVariable Long id) throws MeetupNotFoundException{
+        service.getById(id);
+        service.delete(id);
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public MeetupDTOResponse updateById (@PathVariable Long id, @RequestBody MeetupDTORequest dtoRequest) throws MeetupAlreadyExistsException {
+        Meetup entity = modelMapper.map(dtoRequest,Meetup.class);
+        entity = service.update(id,entity);
+
+        return modelMapper.map(entity,MeetupDTOResponse.class);
     }
 
 
