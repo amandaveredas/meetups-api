@@ -77,6 +77,8 @@ public class RegistrationControllerTest {
 
     }
 
+    //TODO: Tests bean validations when try to create
+
     @Test
     @DisplayName("Should return a BadRequest Status because of duplicated email.")
     void dontCreatARegistrationWithDuplicatedEmail() throws Exception {
@@ -224,6 +226,7 @@ public class RegistrationControllerTest {
         RegistrationDTORequest dtoRequest = RegistrationDTORequest.builder()
                 .name("Amanda Lima Santos")
                 .email("amanda2@teste.com")
+                .registrationAttribute("002")
                 .build();
 
         String json = new ObjectMapper().writeValueAsString(dtoRequest);
@@ -280,6 +283,8 @@ public class RegistrationControllerTest {
                 .andExpect(status().isBadRequest());
 
     }
+
+    //TODO: tests of bean validations when try to update
 
 
     private RegistrationDTORequest createDTORequestWithEmptyName() {

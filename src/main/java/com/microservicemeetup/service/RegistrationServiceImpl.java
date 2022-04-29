@@ -8,6 +8,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -79,6 +80,11 @@ public class RegistrationServiceImpl implements RegistrationService{
                         .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
 
         return repository.findAll(example,pageable);
+    }
+
+    @Override
+    public List<Registration> getByRegistrationAttribute(String registrationAttribute) {
+        return repository.findByRegistrationAttribute(registrationAttribute);
     }
 
     protected Registration createANewRegister(Registration registration) throws EmailAlreadyExistsException {

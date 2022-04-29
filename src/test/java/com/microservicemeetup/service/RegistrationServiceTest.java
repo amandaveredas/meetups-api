@@ -51,8 +51,6 @@ public class RegistrationServiceTest {
 
 
     //************************************* save()
-
-
     @Test
     @DisplayName("Should save an registration")
     public void saveRegistrationWithSucces() throws Exception {

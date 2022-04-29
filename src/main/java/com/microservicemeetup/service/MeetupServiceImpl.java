@@ -7,8 +7,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MeetupServiceImpl implements MeetupService {
@@ -23,6 +25,12 @@ public class MeetupServiceImpl implements MeetupService {
 
     @Override
     public Meetup save(Meetup meetup) {
+        List<Registration> registrations = new ArrayList<>(registrationService.getByRegistrationAttribute(meetup.getRegistrationAttribute()));
+        if(meetup.getRegistrations() != null)
+            registrations.addAll(meetup.getRegistrations());
+        registrations = registrations.stream().distinct().collect(Collectors.toList());
+        meetup.setRegistrations(registrations);
+
        return repository.save(meetup);
     }
 

@@ -72,7 +72,7 @@ public class MeetupController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public MeetupDTOResponse updateById (@PathVariable Long id, @RequestBody MeetupDTORequest dtoRequest) throws MeetupAlreadyExistsException {
+    public MeetupDTOResponse updateById (@PathVariable Long id, @RequestBody @Valid MeetupDTORequest dtoRequest) throws MeetupAlreadyExistsException {
         Meetup entity = modelMapper.map(dtoRequest,Meetup.class);
         entity = service.update(id,entity);
 

@@ -76,7 +76,7 @@ public class RegistrationController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public RegistrationDTOResponse updateById (@PathVariable Long id, @RequestBody RegistrationDTORequest dtoRequest) throws EmailAlreadyExistsException {
+    public RegistrationDTOResponse updateById (@PathVariable Long id, @RequestBody @Valid RegistrationDTORequest dtoRequest) throws EmailAlreadyExistsException {
         Registration entity = modelMapper.map(dtoRequest,Registration.class);
         entity = service.update(id,entity);
 
