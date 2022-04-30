@@ -53,7 +53,9 @@ public class MeetupServiceImpl implements MeetupService {
 
     @Override
     public void delete(Long id) {
-
+        verifyNullId(id);
+        Optional<Meetup> meetup = this.getById(id);
+        repository.delete(meetup.orElseThrow(MeetupNotFoundException::new));
     }
 
     @Override

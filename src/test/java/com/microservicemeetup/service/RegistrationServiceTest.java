@@ -168,7 +168,7 @@ public class RegistrationServiceTest {
     @DisplayName("Should thrown an exception because registration is null")
     void shouldNotDeleteRegistrationNull() {
         Registration registration = Registration.builder().build();
-        String expectedMessage = "Registro ou registro_id não podem ser nulos!!";
+        String expectedMessage = "Id não pode ser nulo!!";
 
         Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.delete(registration.getId()));
 

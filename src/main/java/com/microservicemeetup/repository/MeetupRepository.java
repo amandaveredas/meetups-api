@@ -18,5 +18,7 @@ public interface MeetupRepository extends JpaRepository<Meetup, Long> {
 
     Optional<Meetup> findById(Long id);
 
+    void delete(Meetup meetup);
+
 
 }

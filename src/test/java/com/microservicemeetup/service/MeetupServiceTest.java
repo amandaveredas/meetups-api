@@ -1,9 +1,7 @@
 package com.microservicemeetup.service;
 
 import com.microservicemeetup.controller.dto.MeetupDTORequest;
-import com.microservicemeetup.controller.dto.RegistrationDTORequest;
 import com.microservicemeetup.exceptions.DuplicatedMeetupException;
-import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
 import com.microservicemeetup.exceptions.MeetupNotFoundException;
 import com.microservicemeetup.exceptions.RegistrationNotFoundException;
 import com.microservicemeetup.model.Meetup;
@@ -23,11 +21,11 @@ import org.springframework.test.context.ActiveProfiles;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -200,7 +198,7 @@ public class MeetupServiceTest {
 
     @Test
     @DisplayName("Should throw illegal argument exception because id is null")
-    void shouldThrownAnExceptionARegistrationById_whenIdIsNull() {
+    void shouldThrownAnExceptionAMeetupById_whenTryToGetWithNullId() {
         Long id = null;
         String expectedMessage = "Id não pode ser nulo!!";
 
@@ -210,6 +208,52 @@ public class MeetupServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(expectedMessage);
     }
+
+    //*************************************  delete()
+
+    @Test
+    @DisplayName("Should delete a meetup")
+    void shouldDeleteRegistrationdWithSucces_whenDeleteMethodIsCalled() {
+        Long id = 1L;
+        Meetup  meetup = Meetup.builder().id(id).build();
+        Mockito.when(repository.findById(id)).thenReturn(Optional.of(meetup));
+        Mockito.when(meetupService.getById(id)).thenReturn(Optional.of(meetup));
+
+        Assertions.assertDoesNotThrow(() -> meetupService.delete(id));
+        Mockito.verify(repository,Mockito.times(1)).delete(meetup);
+    }
+
+    @Test
+    @DisplayName("Should thrown a exception because the meetup was not found.")
+    void shouldNotDeleteAMeetup_whenMeetupIsNotFound() {
+        Long id = 1L;
+        Meetup meetup = Meetup.builder().id(id).build();
+        Mockito.when(repository.findById(id)).thenReturn(Optional.empty());
+        String expectedMessage = "Não foi possível encontrar o meetup com o id informado.";
+
+        Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> meetupService.delete(id));
+
+        assertThat(e)
+                .isInstanceOf(MeetupNotFoundException.class)
+                .hasMessage(expectedMessage);
+        Mockito.verify(repository,Mockito.never()).delete(meetup);
+        Mockito.verify(repository,Mockito.times(1)).findById(id);
+
+    }
+
+    @Test
+    @DisplayName("Should throw illegal argument exception because id is null")
+    void shouldThrownAnExceptionAMeetupById_whenTryToDeleteWithNullId() {
+        Long id = null;
+        String expectedMessage = "Id não pode ser nulo!!";
+
+        Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> meetupService.getById(id));
+
+        assertThat(e)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(expectedMessage);
+    }
+
 
 
 
