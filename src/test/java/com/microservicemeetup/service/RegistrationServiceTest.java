@@ -140,7 +140,7 @@ public class RegistrationServiceTest {
     @DisplayName("Should throw illegal argument exception because id is null")
     void shouldThrownAnExceptionARegistrationById() {
         Long id = null;
-        String expectedMessage = "Registro ou registro_id não podem ser nulos!!";
+        String expectedMessage = "Id não pode ser nulo!!";
 
         Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.getById(id));
 

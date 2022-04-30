@@ -1,6 +1,7 @@
 package com.microservicemeetup.service;
 
 import com.microservicemeetup.exceptions.DuplicatedMeetupException;
+import com.microservicemeetup.exceptions.MeetupNotFoundException;
 import com.microservicemeetup.model.Meetup;
 import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.repository.MeetupRepository;
@@ -37,13 +38,17 @@ public class MeetupServiceImpl implements MeetupService {
     }
 
     @Override
-    public Page<Meetup> find(Meetup filter, Pageable pageable) {
-        return null;
+    public Optional<Meetup> getById(Long id) {
+        verifyNullId(id);
+        if (repository.findById(id).isEmpty())
+            throw new MeetupNotFoundException();
+        return repository.findById(id);
     }
 
+
     @Override
-    public Optional<Meetup> getById(Long id) {
-        return Optional.empty();
+    public Page<Meetup> find(Meetup filter, Pageable pageable) {
+        return null;
     }
 
     @Override
@@ -59,6 +64,13 @@ public class MeetupServiceImpl implements MeetupService {
     protected Boolean verifyIfAlreadyExistsAMeetupWithSameEventAndSameDateTime(Meetup meetup) throws DuplicatedMeetupException{
         if(repository.existsByEventAndMeetupDate(meetup.getEvent(), meetup.getMeetupDate()))
             throw new DuplicatedMeetupException();
+        return false;
+    }
+
+    protected boolean verifyNullId(Long id ) throws IllegalArgumentException{
+        if(id == null){
+            throw new IllegalArgumentException("Id não pode ser nulo!!");
+        }
         return false;
     }
 

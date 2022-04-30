@@ -109,7 +109,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 
     protected boolean verifyNullId(Long id ) throws IllegalArgumentException{
         if(id == null){
-            throw new IllegalArgumentException("Registro ou registro_id não podem ser nulos!!");
+            throw new IllegalArgumentException("Id não pode ser nulo!!");
         }
         return false;
     }
