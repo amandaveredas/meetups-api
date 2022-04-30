@@ -1,5 +1,6 @@
 package com.microservicemeetup.service;
 
+import com.microservicemeetup.exceptions.DuplicatedMeetupException;
 import com.microservicemeetup.model.Meetup;
 import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.repository.MeetupRepository;
@@ -25,6 +26,7 @@ public class MeetupServiceImpl implements MeetupService {
 
     @Override
     public Meetup save(Meetup meetup) {
+        verifyIfAlreadyExistsAMeetupWithSameEventAndSameDateTime(meetup);
         List<Registration> registrations = new ArrayList<>(registrationService.getByRegistrationAttribute(meetup.getRegistrationAttribute()));
         if(meetup.getRegistrations() != null)
             registrations.addAll(meetup.getRegistrations());
@@ -52,6 +54,12 @@ public class MeetupServiceImpl implements MeetupService {
     @Override
     public Meetup update(Long eq, Meetup any) {
         return null;
+    }
+
+    protected Boolean verifyIfAlreadyExistsAMeetupWithSameEventAndSameDateTime(Meetup meetup) throws DuplicatedMeetupException{
+        if(repository.existsByEventAndMeetupDate(meetup.getEvent(), meetup.getMeetupDate()))
+            throw new DuplicatedMeetupException();
+        return false;
     }
 
 

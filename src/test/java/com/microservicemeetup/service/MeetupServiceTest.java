@@ -1,5 +1,7 @@
 package com.microservicemeetup.service;
 
+import com.microservicemeetup.exceptions.DuplicatedMeetupException;
+import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
 import com.microservicemeetup.model.Meetup;
 import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.repository.MeetupRepository;
@@ -128,6 +130,21 @@ public class MeetupServiceTest {
         meetup.setId(1L);
 
         return meetup;
+    }
+
+    @Test
+    @DisplayName("Should Not Create A Meetup And Throws A Duplicated Meetup Exception")
+    void shouldNotCreateAMeetupAndThrowADuplicatedMeetupException_whenTryToSaveADuplicatedMeetup() {
+        Meetup meetup = createValidMeetupWithoutRegistrationsAndNullRegistrationAttributeAndNulId();
+        String expectedMessage = "Já existe um meetup com os mesmos dados!";
+        Mockito.when(meetupService.verifyIfAlreadyExistsAMeetupWithSameEventAndSameDateTime(meetup)).thenThrow(new DuplicatedMeetupException());
+
+        Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> meetupService.save(meetup));
+
+        assertThat(e)
+                .isInstanceOf(DuplicatedMeetupException.class)
+                .hasMessage(expectedMessage);
+        Mockito.verify(repository,Mockito.never()).save(meetup);
     }
 
     private Meetup createValidMeetupWithRegistrationsAndRegistrationAttributeAndNulId() {

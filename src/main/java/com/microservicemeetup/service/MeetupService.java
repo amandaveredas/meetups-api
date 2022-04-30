@@ -17,4 +17,6 @@ public interface MeetupService {
     void delete(Long id);
 
     Meetup update(Long eq, Meetup any);
+
+
 }
