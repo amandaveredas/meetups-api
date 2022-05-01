@@ -216,7 +216,7 @@ public class RegistrationServiceTest {
                 .dateOfRegistration(LocalDate.now())
                 .build();
 
-        Mockito.when(registrationService.verifyDuplicatedEmail(id,receivedRegistration)).thenReturn(false);
+        Mockito.when(registrationService.verifyDuplicatedEmailWhenTryToUpdate(id,receivedRegistration)).thenReturn(false);
         Mockito.when(repository.findById(id)).thenReturn(Optional.of(createdValidRegistrationWithId()));
         Mockito.when(repository.save(expectedRegistration)).thenReturn(expectedRegistration);
 
@@ -277,7 +277,7 @@ public class RegistrationServiceTest {
         Registration registrationFoundByEmail = Registration.builder()
                 .id(2L).build();
 
-        Mockito.when(registrationService.verifyDuplicatedEmail(id,receivedRegistration)).thenThrow(new EmailAlreadyExistsException());
+        Mockito.when(registrationService.verifyDuplicatedEmailWhenTryToUpdate(id,receivedRegistration)).thenThrow(new EmailAlreadyExistsException());
         Mockito.when(repository.findById(id)).thenReturn(Optional.of(createdValidRegistrationWithId()));
         String expectedMessage = "Já existe um usuário cadastrado com esse email.";
 

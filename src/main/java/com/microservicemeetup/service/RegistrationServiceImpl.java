@@ -58,7 +58,7 @@ public class RegistrationServiceImpl implements RegistrationService{
         }
 
         //udating a version
-        verifyDuplicatedEmail(id, registration);
+        verifyDuplicatedEmailWhenTryToUpdate(id, registration);
         Registration updatedRegistration = Registration.builder()
                 .id(id)
                 .name(registration.getName())
@@ -91,7 +91,7 @@ public class RegistrationServiceImpl implements RegistrationService{
         return this.save(registration);
     }
 
-    protected boolean verifyDuplicatedEmail(Long id, Registration registration) throws EmailAlreadyExistsException {
+    protected boolean verifyDuplicatedEmailWhenTryToUpdate(Long id, Registration registration) throws EmailAlreadyExistsException {
         if(repository.existsByEmail(registration.getEmail())){
             if (repository.findByEmail(registration.getEmail()).get().getId() != id)
                 throw new EmailAlreadyExistsException();

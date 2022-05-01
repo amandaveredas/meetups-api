@@ -20,5 +20,5 @@ public interface MeetupRepository extends JpaRepository<Meetup, Long> {
 
     void delete(Meetup meetup);
 
-
+    Optional<Meetup> findByEventAndMeetupDate(String event, LocalDateTime meetupDate);
 }

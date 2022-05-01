@@ -86,7 +86,7 @@ public class MeetupControllerTest {
         MeetupDTORequest dtoRequest = createMeetupDTORequest();
         String json = new ObjectMapper().writeValueAsString(dtoRequest);
 
-        BDDMockito.given(service.save(any(Meetup.class))).willThrow(DuplicatedMeetupException.class);
+        BDDMockito.given(service.save(any(Meetup.class))).willThrow(MeetupAlreadyExistsException.class);
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .post(MEETUP_API)
                 .contentType(MediaType.APPLICATION_JSON)

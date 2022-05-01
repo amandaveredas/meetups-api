@@ -1,9 +1,7 @@
 package com.microservicemeetup.service;
 
 import com.microservicemeetup.controller.dto.MeetupDTORequest;
-import com.microservicemeetup.exceptions.DuplicatedMeetupException;
-import com.microservicemeetup.exceptions.MeetupNotFoundException;
-import com.microservicemeetup.exceptions.RegistrationNotFoundException;
+import com.microservicemeetup.exceptions.*;
 import com.microservicemeetup.model.Meetup;
 import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.repository.MeetupRepository;
@@ -21,11 +19,12 @@ import org.springframework.test.context.ActiveProfiles;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -139,13 +138,13 @@ public class MeetupServiceTest {
     @DisplayName("Should Not Create A Meetup And Throws A Duplicated Meetup Exception")
     void shouldNotCreateAMeetupAndThrowADuplicatedMeetupException_whenTryToSaveADuplicatedMeetup() {
         Meetup meetup = createValidMeetupWithoutRegistrationsAndNullRegistrationAttributeAndNulId();
-        String expectedMessage = "Já existe um meetup com os mesmos dados!";
-        Mockito.when(meetupService.verifyIfAlreadyExistsAMeetupWithSameEventAndSameDateTime(meetup)).thenThrow(new DuplicatedMeetupException());
+        String expectedMessage = "Já existe um meetup cadastrado com esses dados.";
+        Mockito.when(meetupService.verifyIfAlreadyExistsAMeetupWithSameEventAndSameDateTime(meetup)).thenThrow(new MeetupAlreadyExistsException());
 
         Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> meetupService.save(meetup));
 
         assertThat(e)
-                .isInstanceOf(DuplicatedMeetupException.class)
+                .isInstanceOf(MeetupAlreadyExistsException.class)
                 .hasMessage(expectedMessage);
         Mockito.verify(repository,Mockito.never()).save(meetup);
     }
@@ -254,7 +253,81 @@ public class MeetupServiceTest {
                 .hasMessage(expectedMessage);
     }
 
+    //*********************************** update
 
+    @Test
+    @DisplayName("Should update a meetup with succes.")
+    void shouldUpdateAMeetupWithSuccess_whenUpdateMethodIsCalled() {
+        Long id = 1L;
+        Meetup receivedMeetup = createValidMeetupWithRegistrationsAndNullRegistrationAttributeAndNulId();
+        Meetup expectedMeetup = createValidMeetupWithRegistrationsAndNullRegistrationAttribute();
+
+
+        Mockito.when(meetupService.verifyIfAlreadyExistsAMeetupWithSameEventAndSameDateTimeWhenTryToUpdate(id,receivedMeetup)).thenReturn(false);
+        Mockito.when(repository.findById(id)).thenReturn(Optional.of(createValidMeetupWithRegistrationsAndNullRegistrationAttribute()));
+        Mockito.when(repository.save(expectedMeetup)).thenReturn(expectedMeetup);
+
+
+        Meetup updatedMeetup = meetupService.update(id, receivedMeetup);
+
+
+        assertThat(id).isEqualTo(updatedMeetup.getId());
+        assertThat(expectedMeetup.getEvent()).isEqualTo(updatedMeetup.getEvent());
+        assertThat(expectedMeetup.getMeetupDate()).isEqualTo(updatedMeetup.getMeetupDate());
+        assertThat(expectedMeetup.getRegistrationAttribute()).isEqualTo(updatedMeetup.getRegistrationAttribute());
+        assertThat(expectedMeetup.getRegistrations()).isEqualTo(updatedMeetup.getRegistrations());
+        Mockito.verify(repository,Mockito.times(1)).findById(id);
+        Mockito.verify(repository,Mockito.times(1)).save(expectedMeetup);
+    }
+
+    @Test
+    @DisplayName("Should Create a new Meetup when is required to update a meetup what doesn't exists.")
+    void shouldCreateANewMeetup_whenTryToUpdateAMeetupThatDontExists() {
+        Long newId = 2L;
+        Meetup receivedMeetup = createValidMeetupWithRegistrationsAndNullRegistrationAttributeAndNulId();
+
+        Meetup expectedMeetup = createValidMeetupWithRegistrationsAndNullRegistrationAttribute();
+        expectedMeetup.setId(newId);
+
+        Mockito.when(repository.findById(anyLong())).thenReturn(Optional.empty());
+        Mockito.when(meetupService.save(receivedMeetup)).thenReturn(expectedMeetup);
+
+        Meetup updatedMeetup = meetupService.update(anyLong(), receivedMeetup);
+
+
+        assertThat(newId).isEqualTo(updatedMeetup.getId());
+        assertThat(expectedMeetup.getEvent()).isEqualTo(updatedMeetup.getEvent());
+        assertThat(expectedMeetup.getMeetupDate()).isEqualTo(updatedMeetup.getMeetupDate());
+        assertThat(expectedMeetup.getRegistrationAttribute()).isEqualTo(updatedMeetup.getRegistrationAttribute());
+        assertThat(expectedMeetup.getRegistrations()).isEqualTo(updatedMeetup.getRegistrations());
+        Mockito.verify(repository,Mockito.times(1)).findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("Should thrown an exception when try to update with a duplicated meetup.")
+    void shouldNotUpdateAMeetup_whenAlreadExistsTheSameMeetup() {
+        Long id = 1L;
+        Meetup receivedMeetup = createValidMeetupWithRegistrationsAndNullRegistrationAttributeAndNulId();
+        Meetup foundMeetup = createValidMeetupWithRegistrationsAndNullRegistrationAttribute();
+        foundMeetup.setId(2L);
+
+        Mockito.when(meetupService.verifyIfAlreadyExistsAMeetupWithSameEventAndSameDateTimeWhenTryToUpdate(id,receivedMeetup)).thenThrow(new MeetupAlreadyExistsException());
+        Mockito.when(repository.findById(id)).thenReturn(Optional.of(createValidMeetupWithRegistrationsAndNullRegistrationAttribute()));
+
+        String expectedMessage = "Já existe um meetup cadastrado com esses dados.";
+
+
+        Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> meetupService.update(id,receivedMeetup));
+
+
+        assertThat(e)
+                .isInstanceOf(MeetupAlreadyExistsException.class)
+                .hasMessage(expectedMessage);
+        Mockito.verify(repository,Mockito.times(1)).findById(id);
+        Mockito.verify(repository,Mockito.times(1)).existsByEventAndMeetupDate(receivedMeetup.getEvent(), receivedMeetup.getMeetupDate());
+        Mockito.verify(repository,Mockito.never()).save(receivedMeetup);
+
+    }
 
 
     private Meetup createValidMeetupWithRegistrationsAndRegistrationAttributeAndNulId() {
