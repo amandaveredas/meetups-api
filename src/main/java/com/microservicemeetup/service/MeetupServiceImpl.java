@@ -5,6 +5,8 @@ import com.microservicemeetup.exceptions.MeetupNotFoundException;
 import com.microservicemeetup.model.Meetup;
 import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.repository.MeetupRepository;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -49,7 +51,14 @@ public class MeetupServiceImpl implements MeetupService {
 
     @Override
     public Page<Meetup> find(Meetup filter, Pageable pageable) {
-        return null;
+        Example<Meetup> example = Example.of(filter,
+                ExampleMatcher
+                        .matching()
+                        .withIgnoreCase()
+                        .withIgnoreNullValues()
+                        .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
+
+        return repository.findAll(example,pageable);
     }
 
     @Override

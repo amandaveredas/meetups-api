@@ -14,6 +14,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.validation.ConstraintViolation;
@@ -327,6 +331,28 @@ public class MeetupServiceTest {
         Mockito.verify(repository,Mockito.times(1)).existsByEventAndMeetupDate(receivedMeetup.getEvent(), receivedMeetup.getMeetupDate());
         Mockito.verify(repository,Mockito.never()).save(receivedMeetup);
 
+    }
+
+    //*********************************** findAll
+
+    @Test
+    @DisplayName("Should return a page with all matches with filter")
+    void shouldFindMeetups_whenAFilterIsGave() {
+        Meetup meetup = createValidMeetupWithRegistrationsByRegistrationAttribute();
+        PageRequest pageRequest = PageRequest.of(0,10);
+        List<Meetup> meetups = Arrays.asList(meetup);
+        Page<Meetup> page = new PageImpl<Meetup>(Arrays.asList(meetup),
+                PageRequest.of(0,10),1);
+
+        Mockito.when(repository.findAll(any(Example.class), any(PageRequest.class)))
+                .thenReturn(page);
+
+        Page<Meetup> result = meetupService.find(meetup,pageRequest);
+
+        assertThat(result.getTotalElements()).isEqualTo(1);
+        assertThat(result.getContent()).isEqualTo(meetups);
+        assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
+        assertThat(result.getPageable().getPageSize()).isEqualTo(10);
     }
 
 

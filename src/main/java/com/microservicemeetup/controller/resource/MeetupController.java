@@ -41,6 +41,7 @@ public class MeetupController {
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public Page<MeetupDTOResponse> find(MeetupDTORequestFilter dtoFilter, Pageable pageable) {
         Meetup filter = modelMapper.map(dtoFilter, Meetup.class);
         Page<Meetup> result = service.find(filter, pageable);

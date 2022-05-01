@@ -8,6 +8,7 @@ import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.controller.dto.RegistrationDTORequest;
 import com.microservicemeetup.service.RegistrationService;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,9 +28,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
@@ -77,7 +82,29 @@ public class RegistrationControllerTest {
 
     }
 
-    //TODO: Tests bean validations when try to create
+    @Test
+    @DisplayName("Should return a Bad Request when violate constraints when try to save a Registration.")
+    public void shouldNotCreateARegistrationAndReturnABadRequest_whenRequiredFieldsAreEmptyOrNull() throws Exception {
+
+        RegistrationDTORequest dtoRequest = RegistrationDTORequest.builder().build();
+        String json = new ObjectMapper().writeValueAsString(dtoRequest);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(REGISTRATION_API)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc
+                .perform(request)
+                .andExpect(status().isBadRequest());
+
+        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        Set<ConstraintViolation<RegistrationDTORequest>> violations = validator.validate(dtoRequest);
+
+        Assertions.assertEquals(3,violations.size());
+    }
+
 
     @Test
     @DisplayName("Should return a BadRequest Status because of duplicated email.")
@@ -259,6 +286,29 @@ public class RegistrationControllerTest {
     }
 
     @Test
+    @DisplayName("Should return a Bad Request when violate constraints when try to update a Registration.")
+    public void shouldNotUpdateARegistrationAndReturnABadRequest_whenRequiredFieldsAreEmptyOrNull() throws Exception {
+        Long id = 1L;
+        RegistrationDTORequest dtoRequest = RegistrationDTORequest.builder().build();
+        String json = new ObjectMapper().writeValueAsString(dtoRequest);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .put(REGISTRATION_API.concat("/"+id))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc
+                .perform(request)
+                .andExpect(status().isBadRequest());
+
+        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        Set<ConstraintViolation<RegistrationDTORequest>> violations = validator.validate(dtoRequest);
+
+        Assertions.assertEquals(3,violations.size());
+    }
+
+    @Test
     @DisplayName("Should return a BadRequest Status because of duplicated email.")
     void dontUpdateARegistrationWithDuplicatedEmail() throws Exception {
         Long id = 1L;
@@ -283,8 +333,6 @@ public class RegistrationControllerTest {
                 .andExpect(status().isBadRequest());
 
     }
-
-    //TODO: tests of bean validations when try to update
 
 
     private RegistrationDTORequest createDTORequestWithEmptyName() {
