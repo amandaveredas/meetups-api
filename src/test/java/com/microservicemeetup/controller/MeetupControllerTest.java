@@ -35,10 +35,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -326,7 +323,7 @@ public class MeetupControllerTest {
                 .build();
     }
 
-    private List<Registration> createListOfRegistrations(){
+    private Set<Registration> createListOfRegistrations(){
         Registration registration1 = Registration.builder()
                 .id(1L)
                 .name("Amanda")
@@ -343,7 +340,11 @@ public class MeetupControllerTest {
                 .dateOfRegistration(LocalDate.now())
                 .build();
 
-        return Arrays.asList(registration1,registration2);
+        Set<Registration> registrations = new LinkedHashSet<>();
+        registrations.add(registration1);
+        registrations.add(registration2);
+
+        return registrations;
 
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -34,9 +35,10 @@ public class MeetupController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public MeetupDTOResponse create(@RequestBody @Valid MeetupDTORequest dtoRequest) throws MeetupAlreadyExistsException{
+    public MeetupDTOResponse create(@RequestBody @Valid MeetupDTORequest dtoRequest) throws MeetupAlreadyExistsException, RegistrationNotFoundException {
+        Set<Registration> registrations = dtoRequest.getRegistrationList();
         Meetup entity = modelMapper.map(dtoRequest,Meetup.class);
-        //TODO: This map is not passing the registrations
+        entity.setRegistrations(registrations);
         entity = service.save(entity);
 
         return modelMapper.map(entity, MeetupDTOResponse.class);
@@ -75,7 +77,7 @@ public class MeetupController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public MeetupDTOResponse updateById (@PathVariable Long id, @RequestBody @Valid MeetupDTORequest dtoRequest) throws MeetupAlreadyExistsException {
+    public MeetupDTOResponse updateById (@PathVariable Long id, @RequestBody @Valid MeetupDTORequest dtoRequest) throws MeetupAlreadyExistsException, RegistrationNotFoundException {
         Meetup entity = modelMapper.map(dtoRequest,Meetup.class);
         entity = service.update(id,entity);
 

@@ -50,7 +50,7 @@ public class MeetupServiceTest {
     //************************************* save()
     @Test
     @DisplayName("Should save an meetup with sucess when a empty list and empty registration attribute are gave.")
-    public void shouldCreateAMeetupWithSucces_whenNoRegistrationsAreGave() {
+    public void shouldCreateAMeetupWithSucces_whenNoRegistrationsAreGave() throws RegistrationNotFoundException {
         Meetup meetup = createValidMeetupWithoutRegistrationsAndNullRegistrationAttributeAndNulId();
         Mockito.when(repository.save(meetup)).thenReturn(createValidMeetupWithoutRegistrationsAndNullRegistrationAttribute());
 
@@ -65,7 +65,7 @@ public class MeetupServiceTest {
 
     @Test
     @DisplayName("Should save an meetup with sucess when a empty list is gave and with a registration attribute defined.")
-    public void shouldCreateAMeetupWithSuccess_whenARegistrationAttributeAreGave() {
+    public void shouldCreateAMeetupWithSuccess_whenARegistrationAttributeAreGave() throws RegistrationNotFoundException {
         Meetup meetupRequest = createValidMeetupWithoutRegistrationsAndNulId();
         Meetup meetup = createValidMeetupWithRegistrationsByRegistrationAttribute();
         meetup.setId(null);
@@ -85,9 +85,9 @@ public class MeetupServiceTest {
 
     @Test
     @DisplayName("Should save an meetup with sucess when a registration's list is gave and with a empty registration attribute.")
-    public void shouldCreateAMeetupWithSuccess_whenARegistrationsListIsGave() {
+    public void shouldCreateAMeetupWithSuccess_whenARegistrationsListIsGave() throws RegistrationNotFoundException {
         Meetup meetupRequest = createValidMeetupWithRegistrationsAndNullRegistrationAttributeAndNulId();
-        Mockito.when(registrationService.getByRegistrationAttribute(meetupRequest.getRegistrationAttribute())).thenReturn(Collections.emptyList());
+        Mockito.when(registrationService.getByRegistrationAttribute(meetupRequest.getRegistrationAttribute())).thenReturn(new LinkedHashSet<>());
         Mockito.when(repository.save(meetupRequest)).thenReturn(createValidMeetupWithRegistrationsAndNullRegistrationAttribute());
 
         Meetup savedMeetup = meetupService.save(meetupRequest);
@@ -102,7 +102,7 @@ public class MeetupServiceTest {
 
     @Test
     @DisplayName("Should save an meetup with success when a registration's list and registrationAttribute are gave.")
-    public void shouldCreateAMeetupWithSuccess_whenARegistrationsListAndRegistrationAttributeAreGave() {
+    public void shouldCreateAMeetupWithSuccess_whenARegistrationsListAndRegistrationAttributeAreGave() throws RegistrationNotFoundException {
         Meetup meetupRequest = createValidMeetupWithRegistrationsAndRegistrationAttributeAndNulId();
         Meetup meetup = createValidMeetupWithRegistrationsAndRegistrationAttribute();
         meetup.setId(null);
@@ -128,7 +128,7 @@ public class MeetupServiceTest {
         Registration registration4 = Registration.builder()
                 .id(4L)
                 .registrationAttribute("gestão").build();
-        List<Registration> addedRegistrationList = new ArrayList<>(meetup.getRegistrations());
+        Set<Registration> addedRegistrationList = new LinkedHashSet<>(meetup.getRegistrations());
         addedRegistrationList.add(registration3);
         addedRegistrationList.add(registration4);
         meetup.setRegistrations(addedRegistrationList);
@@ -261,7 +261,7 @@ public class MeetupServiceTest {
 
     @Test
     @DisplayName("Should update a meetup with succes.")
-    void shouldUpdateAMeetupWithSuccess_whenUpdateMethodIsCalled() {
+    void shouldUpdateAMeetupWithSuccess_whenUpdateMethodIsCalled() throws RegistrationNotFoundException {
         Long id = 1L;
         Meetup receivedMeetup = createValidMeetupWithRegistrationsAndNullRegistrationAttributeAndNulId();
         Meetup expectedMeetup = createValidMeetupWithRegistrationsAndNullRegistrationAttribute();
@@ -286,7 +286,7 @@ public class MeetupServiceTest {
 
     @Test
     @DisplayName("Should Create a new Meetup when is required to update a meetup what doesn't exists.")
-    void shouldCreateANewMeetup_whenTryToUpdateAMeetupThatDontExists() {
+    void shouldCreateANewMeetup_whenTryToUpdateAMeetupThatDontExists() throws RegistrationNotFoundException {
         Long newId = 2L;
         Meetup receivedMeetup = createValidMeetupWithRegistrationsAndNullRegistrationAttributeAndNulId();
 
@@ -370,7 +370,7 @@ public class MeetupServiceTest {
 
     private Meetup createValidMeetupWithRegistrationsAndNullRegistrationAttributeAndNulId() {
         Meetup meetup = createValidMeetupWithoutRegistrationsAndNullRegistrationAttributeAndNulId();
-        List<Registration> registrations = createListOfRegistrations();
+        Set<Registration> registrations = createListOfRegistrations();
         meetup.setRegistrations(registrations);
         return meetup;
     }
@@ -378,7 +378,7 @@ public class MeetupServiceTest {
     private Meetup createValidMeetupWithRegistrationsByRegistrationAttribute() {
         Meetup meetup = createValidMeetupWithoutRegistrationsAndNulId();
         meetup.setId(1L);
-        List<Registration> registrations = createListOfRegistrations();
+        Set<Registration> registrations = createListOfRegistrations();
         meetup.setRegistrations(registrations);
         return meetup;
     }
@@ -402,14 +402,14 @@ public class MeetupServiceTest {
                 .build();
     }
 
-    private List<Registration> createListOfRegistrations() {
+    private Set<Registration> createListOfRegistrations() {
         Registration registration1 = Registration.builder()
                 .id(1L)
                 .registrationAttribute("gestão").build();
         Registration registration2 = Registration.builder()
                 .id(2L)
                 .registrationAttribute("gestão").build();
-        return Arrays.asList(registration1,registration2);
+        return new LinkedHashSet<>(Arrays.asList(registration1,registration2));
     }
 
 

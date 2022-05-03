@@ -15,6 +15,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -27,7 +28,7 @@ public class MeetupDTORequest {
 
     private String registrationAttribute;
 
-    private List<Registration> registrationList;
+    private Set<Registration> registrationList;
 
     @NotNull(message = "O campo meetupdDate não pode estar em branco!")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

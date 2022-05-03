@@ -8,8 +8,10 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService{
@@ -83,8 +85,8 @@ public class RegistrationServiceImpl implements RegistrationService{
     }
 
     @Override
-    public List<Registration> getByRegistrationAttribute(String registrationAttribute) {
-        return repository.findByRegistrationAttribute(registrationAttribute);
+    public Set<Registration> getByRegistrationAttribute(String registrationAttribute) {
+        return new LinkedHashSet<>(repository.findByRegistrationAttribute(registrationAttribute));
     }
 
     protected Registration createANewRegister(Registration registration) throws EmailAlreadyExistsException {

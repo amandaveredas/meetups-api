@@ -15,6 +15,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -38,9 +39,8 @@ public class Meetup {
     @Column(name = "registration_attribute")
     private String registrationAttribute;
 
-    @JoinColumn(name = "registrations")
-    @ManyToMany
-    private List<Registration> registrations;
+    @ManyToMany(mappedBy = "meetups")
+    private Set<Registration> registrations;
 
 
 

@@ -2,6 +2,7 @@ package com.microservicemeetup.service;
 
 import com.microservicemeetup.exceptions.MeetupAlreadyExistsException;
 import com.microservicemeetup.exceptions.MeetupNotFoundException;
+import com.microservicemeetup.exceptions.RegistrationNotFoundException;
 import com.microservicemeetup.model.Meetup;
 import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.repository.MeetupRepository;
@@ -12,9 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,12 +28,21 @@ public class MeetupServiceImpl implements MeetupService {
     }
 
     @Override
-    public Meetup save(Meetup meetup) throws MeetupAlreadyExistsException{
+    public Meetup save(Meetup meetup) throws MeetupAlreadyExistsException, RegistrationNotFoundException {
         verifyIfAlreadyExistsAMeetupWithSameEventAndSameDateTime(meetup);
-        List<Registration> registrations = new ArrayList<>(registrationService.getByRegistrationAttribute(meetup.getRegistrationAttribute()));
-        if(meetup.getRegistrations() != null)
-            registrations.addAll(meetup.getRegistrations());
-        registrations = registrations.stream().distinct().collect(Collectors.toList());
+        Set<Registration> registrations = new LinkedHashSet<>(registrationService.getByRegistrationAttribute(meetup.getRegistrationAttribute())) {
+
+        };
+
+        if(meetup.getRegistrations() != null){
+            for(Registration r: meetup.getRegistrations()){
+                Optional<Registration> registration = registrationService.getById(r.getId());
+                if(registration.isPresent()){
+                    registrations.add(registration.get());
+                }
+            }
+        }
+        registrations = new LinkedHashSet<>(registrations.stream().distinct().collect(Collectors.toList())) ;
         meetup.setRegistrations(registrations);
 
        return repository.save(meetup);
@@ -69,7 +77,7 @@ public class MeetupServiceImpl implements MeetupService {
     }
 
     @Override
-    public Meetup update(Long id, Meetup meetup) {
+    public Meetup update(Long id, Meetup meetup) throws RegistrationNotFoundException {
         Optional<Meetup> actualMeetup = repository.findById(id);
 
         if(actualMeetup.isEmpty()){

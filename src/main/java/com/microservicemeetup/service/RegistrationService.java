@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface RegistrationService {
 
@@ -21,5 +22,5 @@ public interface RegistrationService {
 
     Page<Registration> find(Registration filter, Pageable pageable);
 
-    List<Registration> getByRegistrationAttribute(String registrationAttribute);
+    Set<Registration> getByRegistrationAttribute(String registrationAttribute);
 }

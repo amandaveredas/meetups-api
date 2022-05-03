@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -33,8 +34,11 @@ public class Registration {
     @Column(name = "user_email")
     private String email;
 
-    @JoinColumn(name = "meetups_id")
     @ManyToMany
+    @JoinTable(
+            name = "meetups",
+            joinColumns = @JoinColumn(name = "registration_id"),
+            inverseJoinColumns = @JoinColumn(name = "meetup_id"))
     private List<Meetup> meetups;
 
 }

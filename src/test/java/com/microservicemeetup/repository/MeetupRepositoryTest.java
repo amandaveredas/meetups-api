@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -128,9 +129,8 @@ public class MeetupRepositoryTest {
         return Meetup.builder()
                 .event("Encontro Anual da Liderança")
                 .meetupDate(LocalDateTime.of(2022,05,02,19,00))
-                .registrations(Arrays.asList(
-                        Registration.builder().id(1L).name("Amanda").build(),
-                        Registration.builder().id(2L).name("Roni").build()))
+                .registrations(new LinkedHashSet(Arrays.asList(Registration.builder().id(1L).name("Amanda").build(),
+                        Registration.builder().id(2L).name("Roni").build())))
                 .registrationAttribute("Gestão").build();
     }
 }
