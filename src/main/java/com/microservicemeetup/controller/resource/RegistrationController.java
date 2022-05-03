@@ -56,7 +56,7 @@ public class RegistrationController {
                 .collect(Collectors.toList());
 
         return new PageImpl<RegistrationDTOResponse>(list, pageable, result.getTotalElements());
-    }
+    }//TODO: Data dando bug quando é passada vida Params
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)

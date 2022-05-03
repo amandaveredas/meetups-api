@@ -81,7 +81,7 @@ public class MeetupControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(1L))
                 .andExpect(jsonPath("event").value("Alinhamento anual da liderança"))
-                .andExpect(jsonPath("meetupDate").value("10-05-2022 19:00:00"))
+                .andExpect(jsonPath("meetupDate").value("10-05-2022 19:00"))
                 .andExpect(jsonPath("registrationAttribute").value("liderança"));
     }
 
@@ -175,7 +175,7 @@ public class MeetupControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(foundMeetup.getId()))
                 .andExpect(jsonPath("event").value(foundMeetup.getEvent()))
-                .andExpect(jsonPath("meetupDate").value("10-05-2022 19:00:00"))
+                .andExpect(jsonPath("meetupDate").value("10-05-2022 19:00"))
                 .andExpect(jsonPath("registrationAttribute").value(foundMeetup.getRegistrationAttribute()));
     }
 
@@ -255,7 +255,7 @@ public class MeetupControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(updatedMeetup.getId()))
                 .andExpect(jsonPath("event").value(updatedMeetup.getEvent()))
-                .andExpect(jsonPath("meetupDate").value("10-05-2022 19:00:00"))
+                .andExpect(jsonPath("meetupDate").value("10-05-2022 19:00"))
                 .andExpect(jsonPath("registrationAttribute").value(updatedMeetup.getRegistrationAttribute()));
     }
 
