@@ -1,6 +1,8 @@
 package com.microservicemeetup.controller.exceptions;
 
 import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
+import com.microservicemeetup.exceptions.MeetupAlreadyExistsException;
+import com.microservicemeetup.exceptions.MeetupNotFoundException;
 import com.microservicemeetup.exceptions.RegistrationNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,6 +27,14 @@ public class ApiErrors {
     }
 
     public ApiErrors (RegistrationNotFoundException e){
+        this.errors = Arrays.asList(e.getMessage());
+    }
+
+    public ApiErrors (MeetupAlreadyExistsException e){
+        this.errors = Arrays.asList(e.getMessage());
+    }
+
+    public ApiErrors (MeetupNotFoundException e){
         this.errors = Arrays.asList(e.getMessage());
     }
 

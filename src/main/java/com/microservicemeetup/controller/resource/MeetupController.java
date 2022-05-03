@@ -34,8 +34,9 @@ public class MeetupController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public MeetupDTOResponse create(@RequestBody @Valid MeetupDTORequest dtoRequest){
+    public MeetupDTOResponse create(@RequestBody @Valid MeetupDTORequest dtoRequest) throws MeetupAlreadyExistsException{
         Meetup entity = modelMapper.map(dtoRequest,Meetup.class);
+        //TODO: This map is not passing the registrations
         entity = service.save(entity);
 
         return modelMapper.map(entity, MeetupDTOResponse.class);

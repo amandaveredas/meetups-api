@@ -47,6 +47,7 @@ public class RegistrationController {
 
     @GetMapping
     public Page<RegistrationDTOResponse> find(RegistrationDTORequestFilter dto, Pageable pageable) {
+        //TODO: Date has bug
         Registration filter = modelMapper.map(dto, Registration.class);
         Page<Registration> result = service.find(filter, pageable);
 
@@ -56,7 +57,7 @@ public class RegistrationController {
                 .collect(Collectors.toList());
 
         return new PageImpl<RegistrationDTOResponse>(list, pageable, result.getTotalElements());
-    }//TODO: Data dando bug quando é passada vida Params
+    }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)

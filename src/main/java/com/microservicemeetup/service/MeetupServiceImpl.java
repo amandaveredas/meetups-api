@@ -29,7 +29,7 @@ public class MeetupServiceImpl implements MeetupService {
     }
 
     @Override
-    public Meetup save(Meetup meetup) {
+    public Meetup save(Meetup meetup) throws MeetupAlreadyExistsException{
         verifyIfAlreadyExistsAMeetupWithSameEventAndSameDateTime(meetup);
         List<Registration> registrations = new ArrayList<>(registrationService.getByRegistrationAttribute(meetup.getRegistrationAttribute()));
         if(meetup.getRegistrations() != null)

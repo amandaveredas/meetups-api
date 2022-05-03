@@ -2,6 +2,8 @@ package com.microservicemeetup.controller;
 
 import com.microservicemeetup.controller.exceptions.ApiErrors;
 import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
+import com.microservicemeetup.exceptions.MeetupAlreadyExistsException;
+import com.microservicemeetup.exceptions.MeetupNotFoundException;
 import com.microservicemeetup.exceptions.RegistrationNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,6 @@ public class ApplicationControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrors handleValidateException(MethodArgumentNotValidException e){
         BindingResult bindingResult = e.getBindingResult();
-
         return new ApiErrors(bindingResult);
     }
 
@@ -40,4 +41,17 @@ public class ApplicationControllerAdvice {
     public ResponseEntity handleResponseStatusException(ResponseStatusException e){
         return new ResponseEntity(new ApiErrors(e), e.getStatus());
     }
+
+    @ExceptionHandler(MeetupAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrors handleMeetupAlreadyExistsException(MeetupAlreadyExistsException e){
+        return new ApiErrors(e);
+    }
+
+    @ExceptionHandler(MeetupNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrors handleMeetupNotFoundException(MeetupNotFoundException e){
+        return new ApiErrors(e);
+    }
+
 }
