@@ -90,6 +90,7 @@ public class MeetupServiceImpl implements MeetupService {
     }
 
     protected Boolean verifyIfAlreadyExistsAMeetupWithSameEventAndSameDateTime(Meetup meetup) throws MeetupAlreadyExistsException{
+        //TODO: CaseIgnore is necessary
         if(repository.existsByEventAndMeetupDate(meetup.getEvent(), meetup.getMeetupDate()))
             throw new MeetupAlreadyExistsException();
         return false;
@@ -107,6 +108,7 @@ public class MeetupServiceImpl implements MeetupService {
         String event = receivedMeetup.getEvent();
         LocalDateTime meetupDate = receivedMeetup.getMeetupDate();
 
+        //TODO: Case Ignore is necessary
         if(repository.existsByEventAndMeetupDate(event, meetupDate)){
             if(repository.findByEventAndMeetupDate(event, meetupDate)
                     .get().getId() != id)
