@@ -14,13 +14,13 @@ import java.util.List;
 @Builder
 public class RegistrationDTORequest {
 
-    @NotBlank
+    @NotBlank(message = "O campo name não pode estar em branco!")
     private String name;
 
-    @NotBlank
+    @NotBlank(message = "O campo email não pode estar em branco!")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "O campo registrationAttribute não pode estar em branco!")
     private String registrationAttribute;
 
 }
