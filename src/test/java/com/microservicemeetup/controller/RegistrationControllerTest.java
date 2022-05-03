@@ -77,7 +77,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("id").value(1L))
                 .andExpect(jsonPath("name").value("Amanda Lima"))
                 .andExpect(jsonPath("email").value("amanda@teste.com"))
-                .andExpect(jsonPath("dateOfRegistration").value(LocalDate.now().toString()))
+                .andExpect(jsonPath("dateOfRegistration").value("03-05-2022"))
                 .andExpect(jsonPath("registrationAttribute").value("001"));
 
 
@@ -151,7 +151,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("id").value(foundRegistration.getId()))
                 .andExpect(jsonPath("name").value(foundRegistration.getName()))
                 .andExpect(jsonPath("email").value(foundRegistration.getEmail()))
-                .andExpect(jsonPath("dateOfRegistration").value(foundRegistration.getDateOfRegistration().toString()))
+                .andExpect(jsonPath("dateOfRegistration").value("03-05-2022"))
                 .andExpect(jsonPath("registrationAttribute").value(foundRegistration.getRegistrationAttribute()));
     }
 
@@ -196,11 +196,11 @@ public class RegistrationControllerTest {
 
         mockMvc
                 .perform(requestBuilder)
-                .andExpect(status().isOk());
-//                .andExpect(jsonPath("content", Matchers.hasSize(1)))
-//                .andExpect(jsonPath("totalElements"). value(1))
-//                .andExpect(jsonPath("pageable.pageSize"). value(100))
-//                .andExpect(jsonPath("pageable.pageNumber"). value(0));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("content", Matchers.hasSize(1)))
+                .andExpect(jsonPath("totalElements"). value(1))
+                .andExpect(jsonPath("pageable.pageSize"). value(100))
+                .andExpect(jsonPath("pageable.pageNumber"). value(0));
 
     }
 
@@ -276,7 +276,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("id").value(1L))
                 .andExpect(jsonPath("name").value("Amanda Lima Santos"))
                 .andExpect(jsonPath("email").value("amanda2@teste.com"))
-                .andExpect(jsonPath("dateOfRegistration").value(LocalDate.now().toString()))
+                .andExpect(jsonPath("dateOfRegistration").value("03-05-2022"))
                 .andExpect(jsonPath("registrationAttribute").value("002"));
 
     }
@@ -350,7 +350,7 @@ public class RegistrationControllerTest {
                 .id(1L)
                 .name("Amanda Lima")
                 .email("amanda@teste.com")
-                .dateOfRegistration(LocalDate.now())
+                .dateOfRegistration(LocalDate.of(2022,05,03))
                 .registrationAttribute("001")
                 .build();
     }

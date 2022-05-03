@@ -1,5 +1,8 @@
 package com.microservicemeetup.controller.resource;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
 import com.microservicemeetup.exceptions.RegistrationNotFoundException;
 import com.microservicemeetup.controller.dto.RegistrationDTORequestFilter;
@@ -7,6 +10,7 @@ import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.controller.dto.RegistrationDTORequest;
 import com.microservicemeetup.controller.dto.RegistrationDTOResponse;
 import com.microservicemeetup.service.RegistrationService;
+import org.apache.tomcat.jni.Local;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -16,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,7 +52,6 @@ public class RegistrationController {
 
     @GetMapping
     public Page<RegistrationDTOResponse> find(RegistrationDTORequestFilter dto, Pageable pageable) {
-        //TODO: Date has bug
         Registration filter = modelMapper.map(dto, Registration.class);
         Page<Registration> result = service.find(filter, pageable);
 
