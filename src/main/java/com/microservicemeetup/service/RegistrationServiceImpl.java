@@ -24,7 +24,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 
     @Override
     public Registration save(Registration registration) throws EmailAlreadyExistsException {
-
         verifyIfExistsByEmail(registration);
 
         registration.setDateOfRegistration(LocalDate.now());

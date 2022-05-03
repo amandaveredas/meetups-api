@@ -39,6 +39,6 @@ public class Registration {
             name = "meetups",
             joinColumns = @JoinColumn(name = "registration_id"),
             inverseJoinColumns = @JoinColumn(name = "meetup_id"))
-    private List<Meetup> meetups;
+    private Set<Meetup> meetups;
 
 }

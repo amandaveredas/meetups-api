@@ -14,11 +14,11 @@ public interface MeetupRepository extends JpaRepository<Meetup, Long> {
 
     Meetup save(Meetup meetup);
 
-    Boolean existsByEventAndMeetupDate(String event, LocalDateTime dateTime);
+    Boolean existsByEventIgnoringCaseAndMeetupDate(String event, LocalDateTime dateTime);
 
     Optional<Meetup> findById(Long id);
 
     void delete(Meetup meetup);
 
-    Optional<Meetup> findByEventAndMeetupDate(String event, LocalDateTime meetupDate);
+    Optional<Meetup> findByEventIgnoringCaseAndMeetupDate(String event, LocalDateTime meetupDate);
 }

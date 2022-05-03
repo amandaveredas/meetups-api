@@ -328,7 +328,7 @@ public class MeetupServiceTest {
                 .isInstanceOf(MeetupAlreadyExistsException.class)
                 .hasMessage(expectedMessage);
         Mockito.verify(repository,Mockito.times(1)).findById(id);
-        Mockito.verify(repository,Mockito.times(1)).existsByEventAndMeetupDate(receivedMeetup.getEvent(), receivedMeetup.getMeetupDate());
+        Mockito.verify(repository,Mockito.times(1)).existsByEventIgnoringCaseAndMeetupDate(receivedMeetup.getEvent(), receivedMeetup.getMeetupDate());
         Mockito.verify(repository,Mockito.never()).save(receivedMeetup);
 
     }

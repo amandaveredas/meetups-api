@@ -47,7 +47,7 @@ public class MeetupRepositoryTest {
         Meetup meetup = createNewMeetup();
         entityManager.persist(meetup);
 
-        boolean exists = repository.existsByEventAndMeetupDate(createNewMeetup().getEvent(), createNewMeetup().getMeetupDate());
+        boolean exists = repository.existsByEventIgnoringCaseAndMeetupDate(createNewMeetup().getEvent(), createNewMeetup().getMeetupDate());
         Assertions.assertTrue(exists);
 
     }
@@ -57,7 +57,7 @@ public class MeetupRepositoryTest {
     void shouldReturnFalse_whenAMeetupDontExistsByByEventAndMeetupDate() {
         Meetup meetup = createNewMeetup();
 
-        boolean exists = repository.existsByEventAndMeetupDate(meetup.getEvent(), meetup.getMeetupDate());
+        boolean exists = repository.existsByEventIgnoringCaseAndMeetupDate(meetup.getEvent(), meetup.getMeetupDate());
         Assertions.assertFalse(exists);
 
     }
@@ -91,7 +91,7 @@ public class MeetupRepositoryTest {
         Meetup meetup = createNewMeetup();
         entityManager.persist(meetup);
 
-        Optional<Meetup> foundMeetup = repository.findByEventAndMeetupDate(meetup.getEvent(), meetup.getMeetupDate());
+        Optional<Meetup> foundMeetup = repository.findByEventIgnoringCaseAndMeetupDate(meetup.getEvent(), meetup.getMeetupDate());
 
         assertThat(foundMeetup.isPresent()).isTrue();
     }
@@ -101,7 +101,7 @@ public class MeetupRepositoryTest {
     void shoulNotFindAMeetupByEventAndMeetupDate() {
         Meetup meetup = createNewMeetup();
 
-        Optional<Meetup> foundMeetup = repository.findByEventAndMeetupDate(meetup.getEvent(), meetup.getMeetupDate());
+        Optional<Meetup> foundMeetup = repository.findByEventIgnoringCaseAndMeetupDate(meetup.getEvent(), meetup.getMeetupDate());
 
 
         assertThat(foundMeetup.isEmpty()).isTrue();

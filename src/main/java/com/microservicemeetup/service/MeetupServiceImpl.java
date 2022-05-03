@@ -30,9 +30,7 @@ public class MeetupServiceImpl implements MeetupService {
     @Override
     public Meetup save(Meetup meetup) throws MeetupAlreadyExistsException, RegistrationNotFoundException {
         verifyIfAlreadyExistsAMeetupWithSameEventAndSameDateTime(meetup);
-        Set<Registration> registrations = new LinkedHashSet<>(registrationService.getByRegistrationAttribute(meetup.getRegistrationAttribute())) {
-
-        };
+        Set<Registration> registrations = new LinkedHashSet<>(registrationService.getByRegistrationAttribute(meetup.getRegistrationAttribute()));
 
         if(meetup.getRegistrations() != null){
             for(Registration r: meetup.getRegistrations()){
@@ -98,8 +96,7 @@ public class MeetupServiceImpl implements MeetupService {
     }
 
     protected Boolean verifyIfAlreadyExistsAMeetupWithSameEventAndSameDateTime(Meetup meetup) throws MeetupAlreadyExistsException{
-        //TODO: CaseIgnore is necessary
-        if(repository.existsByEventAndMeetupDate(meetup.getEvent(), meetup.getMeetupDate()))
+        if(repository.existsByEventIgnoringCaseAndMeetupDate(meetup.getEvent(), meetup.getMeetupDate()))
             throw new MeetupAlreadyExistsException();
         return false;
     }
@@ -116,9 +113,8 @@ public class MeetupServiceImpl implements MeetupService {
         String event = receivedMeetup.getEvent();
         LocalDateTime meetupDate = receivedMeetup.getMeetupDate();
 
-        //TODO: Case Ignore is necessary
-        if(repository.existsByEventAndMeetupDate(event, meetupDate)){
-            if(repository.findByEventAndMeetupDate(event, meetupDate)
+        if(repository.existsByEventIgnoringCaseAndMeetupDate(event, meetupDate)){
+            if(repository.findByEventIgnoringCaseAndMeetupDate(event, meetupDate)
                     .get().getId() != id)
                 throw new MeetupAlreadyExistsException();
         }
