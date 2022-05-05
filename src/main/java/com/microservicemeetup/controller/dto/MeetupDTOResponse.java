@@ -29,7 +29,7 @@ public class MeetupDTOResponse {
 
     private String registrationAttribute;
 
-    private Set<Registration> registrations;
+    private Set<RegistrationDTOInsideMeetup> registrations;
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)

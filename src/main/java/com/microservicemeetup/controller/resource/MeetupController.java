@@ -1,6 +1,5 @@
 package com.microservicemeetup.controller.resource;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.microservicemeetup.controller.dto.*;
 import com.microservicemeetup.exceptions.MeetupAlreadyExistsException;
 import com.microservicemeetup.exceptions.MeetupNotFoundException;
@@ -35,9 +34,7 @@ public class MeetupController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public MeetupDTOResponse create(@RequestBody @Valid MeetupDTORequest dtoRequest) throws MeetupAlreadyExistsException, RegistrationNotFoundException {
-        Set<Registration> registrations = dtoRequest.getRegistrations();
         Meetup entity = modelMapper.map(dtoRequest,Meetup.class);
-        entity.setRegistrations(registrations);
         entity = service.save(entity);
 
         return modelMapper.map(entity, MeetupDTOResponse.class);

@@ -5,26 +5,30 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.microservicemeetup.model.Meetup;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RegistrationDTOResponse {
+public class RegistrationDTOInsideMeetup {
+
+    @NotNull
     private Long id;
 
-    private String registrationAttribute;
-
     private String name;
+
+    private String email;
+
+    private String registrationAttribute;
 
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
@@ -32,8 +36,5 @@ public class RegistrationDTOResponse {
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate dateOfRegistration;
 
-    private String email;
-
-    private Set<MeetupDTOResponse> meetups;
 
 }
