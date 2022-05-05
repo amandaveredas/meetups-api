@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/meetup")
+@RequestMapping("/meetup/v1")
 public class MeetupController {
 
     private MeetupService service;

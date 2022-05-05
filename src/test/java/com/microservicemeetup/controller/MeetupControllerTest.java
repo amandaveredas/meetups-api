@@ -48,7 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class MeetupControllerTest {
 
-    final static String MEETUP_API = "/api/meetup";
+    final static String MEETUP_API = "/meetup/v1";
 
     @MockBean
     RegistrationService registrationService;
