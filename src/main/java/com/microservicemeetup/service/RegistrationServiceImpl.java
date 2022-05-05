@@ -86,7 +86,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 
     @Override
     public Set<Registration> getByRegistrationAttribute(String registrationAttribute) {
-        return new LinkedHashSet<>(repository.findByRegistrationAttribute(registrationAttribute));
+        return new LinkedHashSet<>(repository.findByRegistrationAttributeIgnoringCase(registrationAttribute));
         //TODO: IGNORE CASE
     }
 

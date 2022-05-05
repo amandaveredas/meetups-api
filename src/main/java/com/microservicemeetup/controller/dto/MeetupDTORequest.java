@@ -28,7 +28,7 @@ public class MeetupDTORequest {
 
     private String registrationAttribute;
 
-    private Set<Registration> registrationList;
+    private Set<Registration> registrations;
 
     @NotNull(message = "O campo meetupdDate não pode estar em branco!")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

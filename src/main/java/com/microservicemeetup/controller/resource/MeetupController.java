@@ -1,7 +1,7 @@
 package com.microservicemeetup.controller.resource;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.microservicemeetup.controller.dto.*;
-import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
 import com.microservicemeetup.exceptions.MeetupAlreadyExistsException;
 import com.microservicemeetup.exceptions.MeetupNotFoundException;
 import com.microservicemeetup.exceptions.RegistrationNotFoundException;
@@ -12,7 +12,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +35,7 @@ public class MeetupController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public MeetupDTOResponse create(@RequestBody @Valid MeetupDTORequest dtoRequest) throws MeetupAlreadyExistsException, RegistrationNotFoundException {
-        Set<Registration> registrations = dtoRequest.getRegistrationList();
+        Set<Registration> registrations = dtoRequest.getRegistrations();
         Meetup entity = modelMapper.map(dtoRequest,Meetup.class);
         entity.setRegistrations(registrations);
         entity = service.save(entity);

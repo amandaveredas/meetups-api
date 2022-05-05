@@ -42,8 +42,7 @@ public class MeetupServiceImpl implements MeetupService {
         }
         registrations = new LinkedHashSet<>(registrations.stream().distinct().collect(Collectors.toList())) ;
         meetup.setRegistrations(registrations);
-        //TODO: INSERIR AS MEETUPS NAS REGISTRATIONS QUE FORAM CADASTRADAS NA MEETUP
-       return repository.save(meetup);
+      return repository.save(meetup);
 
     }
 

@@ -120,7 +120,7 @@ public class RegistrationRepositoryTest {
         Registration registration = createNewRegistration();
         entityManager.persist(registration);
 
-        List<Registration> foundRegistration = repository.findByRegistrationAttribute(registration.getRegistrationAttribute());
+        List<Registration> foundRegistration = repository.findByRegistrationAttributeIgnoringCase(registration.getRegistrationAttribute());
 
         assertThat(foundRegistration).hasSize(1);
     }
@@ -130,7 +130,7 @@ public class RegistrationRepositoryTest {
     void notFindByRegistrationAttribute() {
         Registration registration = createNewRegistration();
 
-        List<Registration> foundRegistration = repository.findByRegistrationAttribute(registration.getRegistrationAttribute());
+        List<Registration> foundRegistration = repository.findByRegistrationAttributeIgnoringCase(registration.getRegistrationAttribute());
 
         assertThat(foundRegistration).isEmpty();
     }
