@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.Formatter;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.text.ParseException;
@@ -26,5 +27,6 @@ public class ServicoDeAgendamentoDeMeetupsApplication {
 	public ModelMapper modelMapper(){
 		return new ModelMapper();
 	}
+
 
 }

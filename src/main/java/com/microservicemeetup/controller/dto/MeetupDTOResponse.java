@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -27,7 +28,7 @@ public class MeetupDTOResponse {
 
     private String registrationAttribute;
 
-    private List<Registration> registrations;
+    private Set<Registration> registrations;
 
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)

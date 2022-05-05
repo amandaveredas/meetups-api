@@ -17,7 +17,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(SpringExtension.class)
+
 @ActiveProfiles("test")
 @DataJpaTest
 public class RegistrationRepositoryTest {

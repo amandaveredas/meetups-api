@@ -2,6 +2,7 @@ package com.microservicemeetup.service;
 
 import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
 import com.microservicemeetup.exceptions.RegistrationNotFoundException;
+import com.microservicemeetup.model.Meetup;
 import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.repository.RegistrationRepository;
 import org.springframework.data.domain.*;
@@ -86,6 +87,7 @@ public class RegistrationServiceImpl implements RegistrationService{
     @Override
     public Set<Registration> getByRegistrationAttribute(String registrationAttribute) {
         return new LinkedHashSet<>(repository.findByRegistrationAttribute(registrationAttribute));
+        //TODO: IGNORE CASE
     }
 
     protected Registration createANewRegister(Registration registration) throws EmailAlreadyExistsException {

@@ -24,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -32,6 +33,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
@@ -42,13 +44,13 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
 @WebMvcTest(controllers = {RegistrationController.class})
 @AutoConfigureMockMvc
 public class RegistrationControllerTest {
 
     final static String REGISTRATION_API = "/api/registration";
+    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     @MockBean
     RegistrationService service;
@@ -276,7 +278,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("id").value(1L))
                 .andExpect(jsonPath("name").value("Amanda Lima Santos"))
                 .andExpect(jsonPath("email").value("amanda2@teste.com"))
-                .andExpect(jsonPath("dateOfRegistration").value("03-05-2022"))
+                .andExpect(jsonPath("dateOfRegistration").value( LocalDate.now().format(formatter)))
                 .andExpect(jsonPath("registrationAttribute").value("002"));
 
     }

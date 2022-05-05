@@ -1,20 +1,18 @@
 package com.microservicemeetup.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Data @EqualsAndHashCode(exclude = "meetups")
+@Table(name = "registration")
 public class Registration {
 
     @Id
@@ -34,11 +32,8 @@ public class Registration {
     @Column(name = "user_email")
     private String email;
 
-    @ManyToMany
-    @JoinTable(
-            name = "meetups",
-            joinColumns = @JoinColumn(name = "registration_id"),
-            inverseJoinColumns = @JoinColumn(name = "meetup_id"))
+    @ManyToMany(mappedBy = "registrations")
+    @JsonIgnoreProperties("registrations")
     private Set<Meetup> meetups;
 
 }

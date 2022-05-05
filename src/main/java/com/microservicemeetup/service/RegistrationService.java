@@ -2,6 +2,7 @@ package com.microservicemeetup.service;
 
 import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
 import com.microservicemeetup.exceptions.RegistrationNotFoundException;
+import com.microservicemeetup.model.Meetup;
 import com.microservicemeetup.model.Registration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,4 +24,5 @@ public interface RegistrationService {
     Page<Registration> find(Registration filter, Pageable pageable);
 
     Set<Registration> getByRegistrationAttribute(String registrationAttribute);
+
 }

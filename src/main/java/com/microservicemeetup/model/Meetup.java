@@ -1,14 +1,12 @@
 package com.microservicemeetup.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -18,10 +16,11 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Data
+@Data @EqualsAndHashCode(exclude = "registrations")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "meetup")
 public class Meetup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +38,11 @@ public class Meetup {
     @Column(name = "registration_attribute")
     private String registrationAttribute;
 
-    @ManyToMany(mappedBy = "meetups")
+    @ManyToMany
+    @JoinTable(name="meetup_has_registrations", joinColumns=
+            {@JoinColumn(name="meetup_id")}, inverseJoinColumns=
+            {@JoinColumn(name="registration_id")})
+    @JsonIgnoreProperties("meetups")
     private Set<Registration> registrations;
 
 
