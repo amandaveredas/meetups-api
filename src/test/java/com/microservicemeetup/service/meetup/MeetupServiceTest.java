@@ -1,10 +1,13 @@
-package com.microservicemeetup.service;
+package com.microservicemeetup.service.meetup;
 
-import com.microservicemeetup.controller.dto.MeetupDTORequest;
-import com.microservicemeetup.exceptions.*;
+import com.microservicemeetup.controller.dto.meetup.MeetupDTORequest;
+import com.microservicemeetup.exceptions.meetup.MeetupAlreadyExistsException;
+import com.microservicemeetup.exceptions.meetup.MeetupNotFoundException;
+import com.microservicemeetup.exceptions.registration.RegistrationNotFoundException;
 import com.microservicemeetup.model.Meetup;
 import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.repository.MeetupRepository;
+import com.microservicemeetup.service.registration.RegistrationServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,12 +26,12 @@ import org.springframework.test.context.ActiveProfiles;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -189,7 +192,7 @@ public class MeetupServiceTest {
     @DisplayName("Should not get a registration because the id was not found")
     void shouldNotGetAMeetupById_whenGetByIdMethodIsCalled() {
         Mockito.when(repository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
-        String expectedMessage = "Não foi possível encontrar o meetup com o id informado.";
+        String expectedMessage = "Não foi possível encontrar o meetup com o id: 0.";
 
         Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> meetupService.getById(Mockito.anyLong()));
 
@@ -232,7 +235,7 @@ public class MeetupServiceTest {
         Long id = 1L;
         Meetup meetup = Meetup.builder().id(id).build();
         Mockito.when(repository.findById(id)).thenReturn(Optional.empty());
-        String expectedMessage = "Não foi possível encontrar o meetup com o id informado.";
+        String expectedMessage = "Não foi possível encontrar o meetup com o id: 1.";
 
         Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> meetupService.delete(id));
 

@@ -1,12 +1,11 @@
-package com.microservicemeetup.controller.dto;
+package com.microservicemeetup.controller.dto.registration;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.microservicemeetup.controller.dto.meetup.MeetupDTOResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,12 +13,13 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RegistrationDTORequestFilter {
+public class RegistrationDTOResponse {
     private Long id;
 
     private String registrationAttribute;
@@ -33,4 +33,7 @@ public class RegistrationDTORequestFilter {
     private LocalDate dateOfRegistration;
 
     private String email;
+
+    private Set<MeetupDTOResponse> meetups;
+
 }

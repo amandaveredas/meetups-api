@@ -1,9 +1,9 @@
 package com.microservicemeetup.controller.exceptions;
 
-import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
-import com.microservicemeetup.exceptions.MeetupAlreadyExistsException;
-import com.microservicemeetup.exceptions.MeetupNotFoundException;
-import com.microservicemeetup.exceptions.RegistrationNotFoundException;
+import com.microservicemeetup.exceptions.registration.EmailAlreadyExistsException;
+import com.microservicemeetup.exceptions.meetup.MeetupAlreadyExistsException;
+import com.microservicemeetup.exceptions.meetup.MeetupNotFoundException;
+import com.microservicemeetup.exceptions.registration.RegistrationNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.server.ResponseStatusException;
 

@@ -4,12 +4,10 @@ import com.microservicemeetup.model.Registration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,7 +28,7 @@ public class RegistrationRepositoryTest {
 
     @Test
     @DisplayName("Should return true when an registration exists by registration version.")
-    void returnTrueWhenRegistrationExistsByRegistrationVersion() {
+    void shouldReturnTrue_whenRegistrationExistsByRegistrationVersion() {
         Registration registration = createNewRegistration();
         entityManager.persist(registration);
 
@@ -41,7 +39,7 @@ public class RegistrationRepositoryTest {
 
     @Test
     @DisplayName("Should return false when a registration doesn't exists by registration version.")
-    void returnFalseWhenRegistrationDoesntExistsByRegistrationVersion() {
+    void shouldReturnFalse_whenRegistrationDoesntExistsByRegistrationVersion() {
         Registration registration = createNewRegistration();
 
         boolean exists = repository.existsByRegistrationAttribute(createNewRegistration().getRegistrationAttribute());
@@ -51,7 +49,7 @@ public class RegistrationRepositoryTest {
 
     @Test
     @DisplayName("Should return true when an registration exists by email.")
-    void returnTrueWhenRegistrationExistsByEmail() {
+    void shouldReturnTrue_whenRegistrationExistsByEmail() {
         Registration registration = createNewRegistration();
         entityManager.persist(registration);
 
@@ -62,7 +60,7 @@ public class RegistrationRepositoryTest {
 
     @Test
     @DisplayName("Should return false when a registration doesn't exists by email.")
-    void returnFalseWhenRegistrationDoesntExistsByEmail() {
+    void shouldReturnFalse_whenRegistrationDoesntExistsByEmail() {
         Registration registration = createNewRegistration();
 
         boolean exists = repository.existsByEmail(createNewRegistration().getEmail());
@@ -72,7 +70,7 @@ public class RegistrationRepositoryTest {
 
     @Test
     @DisplayName("Should find a Registration By id")
-    void findByIdTest() {
+    void shouldFindById_whenThisRegistrationExists() {
         Registration registration = createNewRegistration();
         entityManager.persist(registration);
 
@@ -83,7 +81,7 @@ public class RegistrationRepositoryTest {
 
     @Test
     @DisplayName("Should not find a Registration By id")
-    void notFindByIdTest() {
+    void shouldNotFindById_whenThisRegistrationDontExists() {
         Registration registration = createNewRegistration();
 
         Optional<Registration> foundRegistration = repository.findById(1L);
@@ -95,7 +93,7 @@ public class RegistrationRepositoryTest {
 
     @Test
     @DisplayName("Should find a Registration By email")
-    void findByEmail() {
+    void shouldFindByEmail_whenThisRegistrationExists() {
         Registration registration = createNewRegistration();
         entityManager.persist(registration);
 
@@ -106,7 +104,7 @@ public class RegistrationRepositoryTest {
 
     @Test
     @DisplayName("Should not find a Registration By email")
-    void notFindByEmail() {
+    void shouldNotFindByEmail_whenThisRegistrationDontExists() {
         Registration registration = createNewRegistration();
 
         Optional<Registration> foundRegistration = repository.findByEmail(registration.getEmail());
@@ -116,7 +114,7 @@ public class RegistrationRepositoryTest {
 
     @Test
     @DisplayName("Should find a Registration By attribute")
-    void findByRegistrationAttribute() {
+    void shouldFindByRegistrationAttribute_whenThisRegistrationExists() {
         Registration registration = createNewRegistration();
         entityManager.persist(registration);
 
@@ -127,7 +125,7 @@ public class RegistrationRepositoryTest {
 
     @Test
     @DisplayName("Should not find a Registration By attribute")
-    void notFindByRegistrationAttribute() {
+    void shouldNotFindByRegistrationAttribute_whenThisRegistrationDontExists() {
         Registration registration = createNewRegistration();
 
         List<Registration> foundRegistration = repository.findByRegistrationAttributeIgnoringCase(registration.getRegistrationAttribute());
@@ -137,7 +135,7 @@ public class RegistrationRepositoryTest {
 
     @Test
     @DisplayName("Should save a Registration")
-    void saveARegistration() {
+    void shouldSaveARegistration_whenAllTheRequirementsAreSatisfied() {
         Registration registration = createNewRegistration();
 
         Registration savedRegistration = repository.save(registration);
@@ -148,7 +146,7 @@ public class RegistrationRepositoryTest {
 
     @Test
     @DisplayName("Should delete a Registration")
-    void deleteARegistration() {
+    void shouldDeleteARegistration_whenRegistrationExists() {
         Registration registration = createNewRegistration();
         entityManager.persist(registration);
 

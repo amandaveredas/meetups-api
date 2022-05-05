@@ -1,12 +1,13 @@
 package com.microservicemeetup.controller.resource;
 
-import com.microservicemeetup.controller.dto.*;
-import com.microservicemeetup.exceptions.MeetupAlreadyExistsException;
-import com.microservicemeetup.exceptions.MeetupNotFoundException;
-import com.microservicemeetup.exceptions.RegistrationNotFoundException;
+import com.microservicemeetup.controller.dto.meetup.MeetupDTORequest;
+import com.microservicemeetup.controller.dto.meetup.MeetupDTORequestFilter;
+import com.microservicemeetup.controller.dto.meetup.MeetupDTOResponse;
+import com.microservicemeetup.exceptions.meetup.MeetupAlreadyExistsException;
+import com.microservicemeetup.exceptions.meetup.MeetupNotFoundException;
+import com.microservicemeetup.exceptions.registration.RegistrationNotFoundException;
 import com.microservicemeetup.model.Meetup;
-import com.microservicemeetup.model.Registration;
-import com.microservicemeetup.service.MeetupService;
+import com.microservicemeetup.service.meetup.MeetupService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -61,7 +61,7 @@ public class MeetupController {
         return service
                 .getById(id)
                 .map(meetup -> modelMapper.map(meetup,MeetupDTOResponse.class))
-                .orElseThrow(MeetupNotFoundException::new);
+                .orElseThrow(() -> new MeetupNotFoundException(id));
     }
 
     @DeleteMapping("/{id}")

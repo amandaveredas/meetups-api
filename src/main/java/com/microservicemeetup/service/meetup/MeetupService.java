@@ -1,6 +1,6 @@
-package com.microservicemeetup.service;
+package com.microservicemeetup.service.meetup;
 
-import com.microservicemeetup.exceptions.RegistrationNotFoundException;
+import com.microservicemeetup.exceptions.registration.RegistrationNotFoundException;
 import com.microservicemeetup.model.Meetup;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

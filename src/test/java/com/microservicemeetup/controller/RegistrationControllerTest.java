@@ -1,20 +1,18 @@
 package com.microservicemeetup.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microservicemeetup.controller.dto.registration.RegistrationDTORequest;
 import com.microservicemeetup.controller.resource.RegistrationController;
-import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
-import com.microservicemeetup.exceptions.RegistrationNotFoundException;
+import com.microservicemeetup.exceptions.registration.EmailAlreadyExistsException;
+import com.microservicemeetup.exceptions.registration.RegistrationNotFoundException;
 import com.microservicemeetup.model.Registration;
-import com.microservicemeetup.controller.dto.RegistrationDTORequest;
-import com.microservicemeetup.service.RegistrationService;
+import com.microservicemeetup.service.registration.RegistrationService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -24,7 +22,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -34,13 +31,12 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -60,7 +56,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("Should create an registration with succes.")
-    public void createRegistrationWithSucces() throws Exception {
+    public void shouldCreateARegistrationWithSucces_whenAllTheRequirementsAreSatisfied() throws Exception {
 
         RegistrationDTORequest dtoRequest = createDTORequest();
         Registration created = createRegistration();
@@ -111,7 +107,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("Should return a BadRequest Status because of duplicated email.")
-    void dontCreatARegistrationWithDuplicatedEmail() throws Exception {
+    void shouldNotCreatARegistration_whenItHasADuplicatedEmail() throws Exception {
         RegistrationDTORequest dtoRequest = createDTORequest();
         Registration registration = Registration.builder()
                 .name(dtoRequest.getName())
@@ -138,7 +134,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("Should get a Registration with succes")
-    void getRegistrationByIdWithSuccess() throws Exception {
+    void shouldGetARegistrationByIdWithSuccess_whenIdIsFound() throws Exception {
         Long id = 1L;
         Registration foundRegistration = createRegistration();
 
@@ -159,7 +155,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("Should return a NotFound Status because of the Registration wasn't found.")
-    void notFoundARegistrationById() throws Exception {
+    void shouldNotFoundARegistrationById_whenTheRegistrationDontExists() throws Exception {
         Long id = 1L;
 
         BDDMockito.given(service.getById(id)).willThrow(RegistrationNotFoundException.class);
@@ -177,7 +173,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("Should filter registration")
-    public void findRegistrations() throws Exception {
+    public void shouldFindRegistrations_whenAFilterIsPassed() throws Exception {
 
         Long id = 1L;
 
@@ -212,7 +208,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("Should delete a registration by id and return No Content Status")
-    void deleteRegistrationWithSucces() throws Exception {
+    void shouldDeleteARegistrationWithSucces_whenThisRegistrationExists() throws Exception {
         Long id = 1L;
         BDDMockito.given(service.getById(id)).willReturn(Optional.of(createRegistration()));
 
@@ -228,7 +224,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("Should return a NotFound Status because of the Registration wasn't found.")
-    void notFoundARegistrationDeleteById() throws Exception {
+    void shouldNotDeleteARegistrationById_whenRegistrationIsNotFound() throws Exception {
         Long id = 1L;
         BDDMockito.given(service.getById(id)).willThrow(RegistrationNotFoundException.class);
 
@@ -245,7 +241,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("Should update and registration with succes")
-    void updatedRegistrationWithSucces() throws Exception {
+    void shouldUpdateRegistrationWithSucces_whenRegistrationExists() throws Exception {
         Long id = 1L;
 
         RegistrationDTORequest dtoRequest = RegistrationDTORequest.builder()
@@ -308,7 +304,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("Should return a BadRequest Status because of duplicated email.")
-    void dontUpdateARegistrationWithDuplicatedEmail() throws Exception {
+    void shouldNotUpdateARegistration_whenItHasADuplicatedEmail() throws Exception {
         Long id = 1L;
 
         RegistrationDTORequest dtoRequest = RegistrationDTORequest.builder()

@@ -1,8 +1,8 @@
-package com.microservicemeetup.service;
+package com.microservicemeetup.service.registration;
 
-import com.microservicemeetup.controller.dto.RegistrationDTORequest;
-import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
-import com.microservicemeetup.exceptions.RegistrationNotFoundException;
+import com.microservicemeetup.controller.dto.registration.RegistrationDTORequest;
+import com.microservicemeetup.exceptions.registration.EmailAlreadyExistsException;
+import com.microservicemeetup.exceptions.registration.RegistrationNotFoundException;
 import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.repository.RegistrationRepository;
 import org.junit.jupiter.api.Assertions;
@@ -52,7 +52,7 @@ public class RegistrationServiceTest {
     //************************************* save()
     @Test
     @DisplayName("Should save an registration")
-    public void saveRegistrationWithSucces() throws Exception {
+    public void shouldSaveARegistrationWithSuccess_whenAllTheRequirementsAreSatisfied() throws Exception {
 
         Registration registration = createdValidRegistrationWithoutId();
         Mockito.when(registrationService.verifyIfExistsByEmail(registration)).thenReturn(false);
@@ -71,7 +71,7 @@ public class RegistrationServiceTest {
 
     @Test
     @DisplayName("Should return an EmailAlreadyExistsException")
-    public void shouldNotSaveRegistrationWithDuplicatedEmail() throws Exception {
+    public void shouldNotSaveRegistration_whenItHasADuplicatedEmail() throws Exception {
         Registration registration = createdValidRegistrationWithoutId();
         String expectedMessage = "Já existe um usuário cadastrado com esse email.";
         Mockito.when(registrationService.verifyIfExistsByEmail(registration)).thenThrow(new EmailAlreadyExistsException());
@@ -86,7 +86,7 @@ public class RegistrationServiceTest {
 
     @Test
     @DisplayName("Should return an Validation Error: Fields cannot be empty")
-    public void shouldNotSaveEmptyFields() {
+    public void shouldNotSaveRegistration_whenItsHasEmptyFields() {
         RegistrationDTORequest registrationDTORequest = createdEmptyFieldsRegistrationDTORequest();
 
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
@@ -102,7 +102,7 @@ public class RegistrationServiceTest {
 
     @Test
     @DisplayName("Should get a Registration by id")
-    void getARegistrationByid() throws RegistrationNotFoundException {
+    void shouldGetARegistrationById_whenThisRegistrationExists() throws RegistrationNotFoundException {
         Long id = 1L;
         Registration registration = createdValidRegistrationWithoutId();
         registration.setId(1L);
@@ -122,9 +122,9 @@ public class RegistrationServiceTest {
 
     @Test
     @DisplayName("Should not get a registration because the id was not found")
-    void shouldNotGetARegistrationById() {
+    void shouldNotGetARegistrationById_whenThisRegistrationDontExists() {
         Mockito.when(repository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
-        String expectedMessage = "Não foi possível encontrar o registro com o id informado.";
+        String expectedMessage = "Não foi possível encontrar o meetup com o id: 0.";
 
 
         Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.getById(Mockito.anyLong()));
@@ -136,8 +136,8 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw illegal argument exception because id is null")
-    void shouldThrownAnExceptionARegistrationById() {
+    @DisplayName("Should throw illegal argument exception because id is null when try to get")
+    void shouldThrownAnExceptionAtGetById_whenIdRegistrationIsNull() {
         Long id = null;
         String expectedMessage = "Id não pode ser nulo!!";
 
@@ -153,7 +153,7 @@ public class RegistrationServiceTest {
 
     @Test
     @DisplayName("Should delete a registration")
-    void deleteRegistrationdWithSucces() throws RegistrationNotFoundException {
+    void shouldDeleteARegistrationWithSuccess_whenThisRegistrationExists() throws RegistrationNotFoundException {
         Long id = 1L;
         Registration registration = Registration.builder().id(id).build();
         Mockito.when(repository.findById(anyLong())).thenReturn(Optional.of(registration));
@@ -164,8 +164,8 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    @DisplayName("Should thrown an exception because registration is null")
-    void shouldNotDeleteRegistrationNull() {
+    @DisplayName("Should thrown an exception because registration is null when try to delete")
+    void shouldThrownAnExceptionAtDeleteById_whenIdRegistrationIsNull() {
         Registration registration = Registration.builder().build();
         String expectedMessage = "Id não pode ser nulo!!";
 
@@ -180,10 +180,10 @@ public class RegistrationServiceTest {
 
     @Test
     @DisplayName("Should thrown a exception because the Registration was not found.")
-    void shouldNotDeleteRegistrationNotFound() {
+    void shouldNotDeleteARegistrationWithSuccess_whenThisRegistrationDontExists() {
         Long id = 1L;
         Registration registration = Registration.builder().id(id).build();
-        String expectedMessage = "Não foi possível encontrar o registro com o id informado.";
+        String expectedMessage = "Não foi possível encontrar o meetup com o id: 1.";
 
         Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.delete(id));
 
@@ -198,7 +198,7 @@ public class RegistrationServiceTest {
 
     @Test
     @DisplayName("Should update a registration with succes.")
-    void updateRegistrationAlreadyExistsWithSucces() throws EmailAlreadyExistsException {
+    void shouldUpdateARegistration_whenThisRegistrationExists() throws EmailAlreadyExistsException {
         Long id = 1L;
         Registration receivedRegistration = Registration.builder()
                 .name("Amanda Santos")
@@ -233,8 +233,8 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    @DisplayName("Create a new Registration when is required to update a registration what doesn't exists.")
-    void updateRegistrationDontExistsButWillBeCreatedWithSucces() throws EmailAlreadyExistsException {
+    @DisplayName("Create a new Registration when is required to update a registration that don't exists.")
+    void shouldCreateARegistration_whenTryToUpdateARegistrationThatDontExists() throws EmailAlreadyExistsException {
         Long newId = 2L;
         Registration receivedRegistration = Registration.builder()
                 .name("Amanda Santos")
@@ -267,7 +267,7 @@ public class RegistrationServiceTest {
 
     @Test
     @DisplayName("Should thrown an exception when try to update with a duplicated email.")
-    void shouldNotUpdateARegistrationWithAnDuplicatedEmail() throws EmailAlreadyExistsException {
+    void shouldNotUpdateARegistration_whenItHasADuplicatedEmail() throws EmailAlreadyExistsException {
         Long id = 1L;
         Registration receivedRegistration = Registration.builder()
                 .name("Amanda Santos")
@@ -297,7 +297,7 @@ public class RegistrationServiceTest {
 
     @Test
     @DisplayName("Should return a page with all matches with filter")
-    void findRegistrations() {
+    void shouldFindRegistrations_whenAFilterIsGave() {
         Registration registration = createdValidRegistrationWithId();
         PageRequest pageRequest = PageRequest.of(0,10);
         List<Registration> registrations = Arrays.asList(registration);

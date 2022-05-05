@@ -1,37 +1,37 @@
-package com.microservicemeetup.controller.dto;
+package com.microservicemeetup.controller.dto.meetup;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.microservicemeetup.model.Registration;
+import com.microservicemeetup.controller.dto.registration.RegistrationDTOInsideMeetup;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MeetupDTORequestFilter {
+public class MeetupDTORequest {
 
-    private Long id;
-
+    @NotBlank(message = "O campo event não pode estar em branco!")
     private String event;
-
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
-    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
-    private LocalDateTime meetupDate;
 
     private String registrationAttribute;
 
+    private Set<RegistrationDTOInsideMeetup> registrations;
+
+    @NotNull(message = "O campo meetupdDate não pode estar em branco!")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
+    private LocalDateTime meetupDate;
 }

@@ -1,22 +1,20 @@
 package com.microservicemeetup.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microservicemeetup.controller.dto.MeetupDTORequest;
-import com.microservicemeetup.controller.dto.RegistrationDTORequest;
+import com.microservicemeetup.controller.dto.meetup.MeetupDTORequest;
 import com.microservicemeetup.controller.resource.MeetupController;
-import com.microservicemeetup.exceptions.*;
+import com.microservicemeetup.exceptions.meetup.MeetupAlreadyExistsException;
+import com.microservicemeetup.exceptions.meetup.MeetupNotFoundException;
 import com.microservicemeetup.model.Meetup;
 import com.microservicemeetup.model.Registration;
-import com.microservicemeetup.service.MeetupService;
-import com.microservicemeetup.service.RegistrationService;
+import com.microservicemeetup.service.meetup.MeetupService;
+import com.microservicemeetup.service.registration.RegistrationService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -26,7 +24,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -36,7 +33,10 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -61,7 +61,7 @@ public class MeetupControllerTest {
 
     @Test
     @DisplayName("Should create a meetup and return a 201-Created Status")
-    void shouldCreateAMeetupWithSucces() throws Exception {
+    void shouldCreateAMeetupWithSucces_whenAllTheRequirementsAreSatisfied() throws Exception {
         MeetupDTORequest dtoRequest = createMeetupDTORequest();
         String json = new ObjectMapper().writeValueAsString(dtoRequest);
         Meetup meetup = createMeetup();
@@ -158,7 +158,7 @@ public class MeetupControllerTest {
 
     @Test
     @DisplayName("Should get a Meetup with succes")
-    void shouldGetAMeetupByIdWithSuccess() throws Exception {
+    void shouldGetAMeetupByIdWithSuccess_whenMeetupExists() throws Exception {
         Long id = 1L;
         Meetup foundMeetup = createMeetup();
 
@@ -197,7 +197,7 @@ public class MeetupControllerTest {
 
     @Test
     @DisplayName("Should delete a meetup by id and return No Content Status")
-    void shouldDeleteAMeetupWithSucces() throws Exception {
+    void shouldDeleteAMeetupWithSucces_whenMeetupExists() throws Exception {
         Long id = 1L;
         BDDMockito.given(service.getById(id)).willReturn(Optional.of(createMeetup()));
 
@@ -231,7 +231,7 @@ public class MeetupControllerTest {
 
     @Test
     @DisplayName("Should update an meetup with succes")
-    void shouldUpdatedAMeetupWithSucces() throws Exception {
+    void shouldUpdatedAMeetupWithSucces_whenMeetupExists() throws Exception {
         Long id = 1L;
 
         MeetupDTORequest dtoRequest = createMeetupDTORequest();
@@ -282,7 +282,7 @@ public class MeetupControllerTest {
 
     @Test
     @DisplayName("Should return a BadRequest Status because of duplicated meetup.")
-    void shouldNotUpdateDuplicatedMeetup() throws Exception {
+    void shouldNotUpdateAMeetup_whenAlreadyExistsAMeetupWithSameEventAndName() throws Exception {
         Long id = 1L;
 
         MeetupDTORequest dtoRequest = createMeetupDTORequest();

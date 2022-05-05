@@ -1,4 +1,4 @@
-package com.microservicemeetup.exceptions;
+package com.microservicemeetup.exceptions.registration;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

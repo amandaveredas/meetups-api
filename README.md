@@ -1,25 +1,25 @@
-# AGENDADOR DE MEETUPS
+# AGENDADOR DE MEETUPS / MEETING SCHEDULER
 
-O objetivo desse serviço é possibilitar o agendamento de encontros online/presenciais.
+O objetivo desse serviço é possibilitar o agendamento de encontros online ou presenciais.
 
-Funcionalidades na V.0.1:
+The purpose of this service is to make it possible to schedule online or face-to-face meetings.
 
-* Criar um registro
-* Alterar um registro
-* Buscar um registro
-* Buscar todos os registros
-* Filtrar registros
-* Excluir um registro
-* Criar um meetup
-* Alterar um meetup
-* Buscar um meetup
-* Buscar todos os meetups
-* Filtrar meetups
-* Excluir um meetup
+Funcionalidades na V.1 / Functionalities at V.1:
+
+* Criar um registro / Create a registration
+* Atualizar um registro / Update a registration
+* Buscar um registro / Find a registration
+* Filtrar registros / Filter registrations
+* Excluir um registro / Delete a registration
+* Criar um meetup / Create a meetup
+* Atualizar um meetup / Update a meetup
+* Buscar um meetup / Find a meetup
+* Filtrar meetups / Filter meetups
+* Excluir um meetup / Delete a meetup
 
 
-## Documentação:
-[Swagger](http://localhost:8080/swagger-ui.html#/)
+## Documentação / Documentation:
+[Swagger](https://api-meetup-registration.azurewebsites.net/swagger-ui.html#/)
 
 
 ### Reference Documentation

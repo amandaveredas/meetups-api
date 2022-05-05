@@ -1,26 +1,20 @@
 package com.microservicemeetup.controller.resource;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
-import com.microservicemeetup.exceptions.RegistrationNotFoundException;
-import com.microservicemeetup.controller.dto.RegistrationDTORequestFilter;
+import com.microservicemeetup.controller.dto.registration.RegistrationDTORequest;
+import com.microservicemeetup.controller.dto.registration.RegistrationDTORequestFilter;
+import com.microservicemeetup.controller.dto.registration.RegistrationDTOResponse;
+import com.microservicemeetup.exceptions.registration.EmailAlreadyExistsException;
+import com.microservicemeetup.exceptions.registration.RegistrationNotFoundException;
 import com.microservicemeetup.model.Registration;
-import com.microservicemeetup.controller.dto.RegistrationDTORequest;
-import com.microservicemeetup.controller.dto.RegistrationDTOResponse;
-import com.microservicemeetup.service.RegistrationService;
-import org.apache.tomcat.jni.Local;
+import com.microservicemeetup.service.registration.RegistrationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,7 +64,7 @@ public class RegistrationController {
         return service
                 .getById(id)
                 .map(registration -> modelMapper.map(registration,RegistrationDTOResponse.class))
-                .orElseThrow(RegistrationNotFoundException::new);
+                .orElseThrow(() -> new RegistrationNotFoundException(id));
     }
 
     @DeleteMapping("/{id}")

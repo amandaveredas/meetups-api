@@ -1,13 +1,11 @@
-package com.microservicemeetup.service;
+package com.microservicemeetup.service.registration;
 
-import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
-import com.microservicemeetup.exceptions.RegistrationNotFoundException;
-import com.microservicemeetup.model.Meetup;
+import com.microservicemeetup.exceptions.registration.EmailAlreadyExistsException;
+import com.microservicemeetup.exceptions.registration.RegistrationNotFoundException;
 import com.microservicemeetup.model.Registration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 

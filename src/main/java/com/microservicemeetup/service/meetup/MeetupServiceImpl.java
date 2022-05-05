@@ -1,11 +1,12 @@
-package com.microservicemeetup.service;
+package com.microservicemeetup.service.meetup;
 
-import com.microservicemeetup.exceptions.MeetupAlreadyExistsException;
-import com.microservicemeetup.exceptions.MeetupNotFoundException;
-import com.microservicemeetup.exceptions.RegistrationNotFoundException;
+import com.microservicemeetup.exceptions.meetup.MeetupAlreadyExistsException;
+import com.microservicemeetup.exceptions.meetup.MeetupNotFoundException;
+import com.microservicemeetup.exceptions.registration.RegistrationNotFoundException;
 import com.microservicemeetup.model.Meetup;
 import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.repository.MeetupRepository;
+import com.microservicemeetup.service.registration.RegistrationService;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
@@ -13,7 +14,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,7 +53,7 @@ public class MeetupServiceImpl implements MeetupService {
     public Optional<Meetup> getById(Long id) {
         verifyNullId(id);
         if (repository.findById(id).isEmpty())
-            throw new MeetupNotFoundException();
+            throw new MeetupNotFoundException(id);
         return repository.findById(id);
     }
 
@@ -71,7 +74,8 @@ public class MeetupServiceImpl implements MeetupService {
     public void delete(Long id) {
         verifyNullId(id);
         Optional<Meetup> meetup = this.getById(id);
-        repository.delete(meetup.orElseThrow(MeetupNotFoundException::new));
+        repository.delete(meetup.orElseThrow(() -> new MeetupNotFoundException(id)));
+
     }
 
     @Override

@@ -5,12 +5,10 @@ import com.microservicemeetup.model.Registration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -76,7 +74,7 @@ public class MeetupRepositoryTest {
 
     @Test
     @DisplayName("Should not find a Meetup By id")
-    void shoulNotFindAMeetupById() {
+    void shoulNotFindAMeetupById_whenAMeetupDontExists() {
         Meetup meetup = createNewMeetup();
 
         Optional<Meetup> foundMeetup = repository.findById(1L);
@@ -87,7 +85,7 @@ public class MeetupRepositoryTest {
     //******************** FIND BY EVENT AND MEETUPDATE
     @Test
     @DisplayName("Should find a Meetup By event and meetup date")
-    void shouldFindAMeetupByEventAndMeetupDate() {
+    void shouldFindAMeetupByEventAndMeetupDate_whenThisMeetupExists() {
         Meetup meetup = createNewMeetup();
         entityManager.persist(meetup);
 
@@ -98,7 +96,7 @@ public class MeetupRepositoryTest {
 
     @Test
     @DisplayName("Should not find a Meetup By event and meetup date")
-    void shoulNotFindAMeetupByEventAndMeetupDate() {
+    void shouldNotFindAMeetupByEventAndMeetupDate_whenThisMeetupDontExists() {
         Meetup meetup = createNewMeetup();
 
         Optional<Meetup> foundMeetup = repository.findByEventIgnoringCaseAndMeetupDate(meetup.getEvent(), meetup.getMeetupDate());
@@ -110,7 +108,7 @@ public class MeetupRepositoryTest {
     //************************** DELETE
     @Test
     @DisplayName("Should delete a Metup")
-    void shouldDeleteAMeetup() {
+    void shouldDeleteAMeetup_whenThisMeetupExists() {
         Meetup meetup = createNewMeetup();
         entityManager.persist(meetup);
 

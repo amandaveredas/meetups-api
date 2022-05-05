@@ -1,8 +1,6 @@
 package com.microservicemeetup.repository;
 
-import com.microservicemeetup.exceptions.MeetupAlreadyExistsException;
 import com.microservicemeetup.model.Meetup;
-import com.microservicemeetup.model.Registration;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

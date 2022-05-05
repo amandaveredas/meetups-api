@@ -1,16 +1,17 @@
-package com.microservicemeetup.service;
+package com.microservicemeetup.service.registration;
 
-import com.microservicemeetup.exceptions.EmailAlreadyExistsException;
-import com.microservicemeetup.exceptions.RegistrationNotFoundException;
-import com.microservicemeetup.model.Meetup;
+import com.microservicemeetup.exceptions.registration.EmailAlreadyExistsException;
+import com.microservicemeetup.exceptions.registration.RegistrationNotFoundException;
 import com.microservicemeetup.model.Registration;
 import com.microservicemeetup.repository.RegistrationRepository;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -39,7 +40,7 @@ public class RegistrationServiceImpl implements RegistrationService{
         Optional<Registration> foundRegistration = repository.findById(id);
 
         if(foundRegistration.isEmpty()){
-            throw new RegistrationNotFoundException();
+            throw new RegistrationNotFoundException(id);
         }
         return foundRegistration;
     }
@@ -87,7 +88,6 @@ public class RegistrationServiceImpl implements RegistrationService{
     @Override
     public Set<Registration> getByRegistrationAttribute(String registrationAttribute) {
         return new LinkedHashSet<>(repository.findByRegistrationAttributeIgnoringCase(registrationAttribute));
-        //TODO: IGNORE CASE
     }
 
     protected Registration createANewRegister(Registration registration) throws EmailAlreadyExistsException {
