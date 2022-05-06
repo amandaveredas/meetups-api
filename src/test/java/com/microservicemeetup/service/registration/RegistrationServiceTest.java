@@ -73,7 +73,7 @@ public class RegistrationServiceTest {
     @DisplayName("Should return an EmailAlreadyExistsException")
     public void shouldNotSaveRegistration_whenItHasADuplicatedEmail() throws Exception {
         Registration registration = createdValidRegistrationWithoutId();
-        String expectedMessage = "Já existe um usuário cadastrado com esse email.";
+        String expectedMessage = "Já existe um registro cadastrado com esse email.";
         Mockito.when(registrationService.verifyIfExistsByEmail(registration)).thenThrow(new EmailAlreadyExistsException());
 
         Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.save(registration));
@@ -124,7 +124,7 @@ public class RegistrationServiceTest {
     @DisplayName("Should not get a registration because the id was not found")
     void shouldNotGetARegistrationById_whenThisRegistrationDontExists() {
         Mockito.when(repository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
-        String expectedMessage = "Não foi possível encontrar o meetup com o id: 0.";
+        String expectedMessage = "Não foi possível encontrar o registration com o id: 0.";
 
 
         Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.getById(Mockito.anyLong()));
@@ -183,7 +183,7 @@ public class RegistrationServiceTest {
     void shouldNotDeleteARegistrationWithSuccess_whenThisRegistrationDontExists() {
         Long id = 1L;
         Registration registration = Registration.builder().id(id).build();
-        String expectedMessage = "Não foi possível encontrar o meetup com o id: 1.";
+        String expectedMessage = "Não foi possível encontrar o registration com o id: 1.";
 
         Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.delete(id));
 
@@ -278,7 +278,7 @@ public class RegistrationServiceTest {
 
         Mockito.when(registrationService.verifyDuplicatedEmailWhenTryToUpdate(id,receivedRegistration)).thenThrow(new EmailAlreadyExistsException());
         Mockito.when(repository.findById(id)).thenReturn(Optional.of(createdValidRegistrationWithId()));
-        String expectedMessage = "Já existe um usuário cadastrado com esse email.";
+        String expectedMessage = "Já existe um registro cadastrado com esse email.";
 
 
         Throwable e = org.assertj.core.api.Assertions.catchThrowable(() -> registrationService.update(id,receivedRegistration));

@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class EmailAlreadyExistsException extends RuntimeException {
     public EmailAlreadyExistsException(){
-        super("Já existe um usuário cadastrado com esse email.");
+        super("Já existe um registro cadastrado com esse email.");
     }
 }

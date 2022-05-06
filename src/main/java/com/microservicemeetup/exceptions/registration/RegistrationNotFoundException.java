@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class RegistrationNotFoundException extends Exception {
     public RegistrationNotFoundException(Long id) {
-        super("Não foi possível encontrar o meetup com o id: "+ id +".");
+        super("Não foi possível encontrar o registration com o id: "+ id +".");
     }
 }
